@@ -150,7 +150,7 @@ async def get_profile(current_user: Annotated[dict, Depends(get_current_user)]):
         result = (
             supabase.table("user_profiles")
             .select(
-                "id, name, email, plan, gmail_connected, tone_preference,"
+                "id, name, plan, gmail_connected, tone_preference,"
                 " company_description, created_at"
             )
             .eq("id", _user_id(current_user))
@@ -162,7 +162,7 @@ async def get_profile(current_user: Annotated[dict, Depends(get_current_user)]):
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Profile not found.",
             )
-        return result.data
+        return {**result.data, "email": current_user.get("email", "")}
     except HTTPException:
         raise
     except Exception as exc:

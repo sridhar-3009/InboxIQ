@@ -2,6 +2,7 @@ import logging
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
+from gotrue.errors import AuthApiError
 from pydantic import BaseModel, EmailStr
 
 from database import get_supabase
@@ -42,7 +43,7 @@ class AuthResponse(BaseModel):
 # Routes
 # ---------------------------------------------------------------------------
 
-@router.post("/signup", response_model=AuthResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/signup", response_model=dict, status_code=status.HTTP_201_CREATED)
 @limiter.limit("5/minute")
 async def signup(request: Request, body: SignUpRequest):
     """Register a new user via Supabase Auth."""
@@ -51,11 +52,14 @@ async def signup(request: Request, body: SignUpRequest):
         result = supabase.auth.sign_up(
             {"email": body.email, "password": body.password}
         )
+    except AuthApiError as exc:
+        logger.warning("Signup rejected for %s: %s", body.email, exc)
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
     except Exception as exc:
-        logger.error("Signup error: %s", exc)
+        logger.error("Signup service error for %s: %s", body.email, exc)
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(exc),
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Authentication service is temporarily unavailable. Please try again shortly.",
         )
 
     if not result.user:
@@ -80,11 +84,20 @@ async def signup(request: Request, body: SignUpRequest):
         logger.warning("Could not create user_profile for %s: %s", user_id, exc)
 
     session = result.session
-    return AuthResponse(
-        access_token=session.access_token,
-        refresh_token=session.refresh_token,
-        user={"id": user_id, "email": body.email},
-    )
+    if not session:
+        # Email confirmation is required before a session can be issued.
+        return {
+            "user": {"id": user_id, "email": body.email},
+            "session_pending": True,
+            "message": "Account created. Check your email to confirm before signing in.",
+        }
+
+    return {
+        "access_token": session.access_token,
+        "refresh_token": session.refresh_token,
+        "token_type": "bearer",
+        "user": {"id": user_id, "email": body.email},
+    }
 
 
 @router.post("/signin", response_model=AuthResponse)
@@ -96,11 +109,17 @@ async def signin(request: Request, body: SignInRequest):
         result = supabase.auth.sign_in_with_password(
             {"email": body.email, "password": body.password}
         )
-    except Exception as exc:
-        logger.warning("Signin failed for %s: %s", body.email, exc)
+    except AuthApiError as exc:
+        logger.warning("Signin rejected for %s: %s", body.email, exc)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid email or password.",
+        )
+    except Exception as exc:
+        logger.error("Signin service error for %s: %s", body.email, exc)
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Authentication service is temporarily unavailable. Please try again shortly.",
         )
 
     if not result.user or not result.session:
