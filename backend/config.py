@@ -67,6 +67,13 @@ class Settings(BaseSettings):
     VAPID_PUBLIC_KEY: str = ""
     VAPID_EMAIL: str = "mailto:admin@mailair.company"
 
+    # Zernio (social posting — Instagram / LinkedIn)
+    ZERNIO_API_KEY: str = ""
+    ZERNIO_INSTAGRAM_ACCOUNT_ID: str = ""
+    ZERNIO_LINKEDIN_ACCOUNT_ID: str = ""
+    ZERNIO_LINKEDIN_ORG_URN: str = ""  # e.g. urn:li:organization:123456 — omit to post to a personal profile instead
+    SOCIAL_AUTOPOST_ENABLED: bool = False  # daily cron only fires when this is explicitly true
+
     # Environment
     ENVIRONMENT: str = "development"
 

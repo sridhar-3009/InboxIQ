@@ -45,6 +45,42 @@ class PlanUpdateBody(BaseModel):
 
 
 # ---------------------------------------------------------------------------
+# Social posting (Zernio)
+# ---------------------------------------------------------------------------
+
+@router.get("/social/preview")
+async def preview_social_post(_: Annotated[dict, Depends(require_admin)]):
+    """Preview today's rotation content and rendered image — does not post."""
+    from services.social_content import get_todays_post
+    from services.social_image import generate_post_image
+    import base64
+
+    post = get_todays_post()
+    image_bytes = generate_post_image(post["headline"], post["subtext"])
+    return {
+        **post,
+        "image_base64": f"data:image/png;base64,{base64.b64encode(image_bytes).decode()}",
+        "autopost_enabled": settings.SOCIAL_AUTOPOST_ENABLED,
+        "platforms_configured": bool(settings.ZERNIO_INSTAGRAM_ACCOUNT_ID or settings.ZERNIO_LINKEDIN_ACCOUNT_ID),
+    }
+
+
+@router.post("/social/post-now")
+async def trigger_social_post(_: Annotated[dict, Depends(require_admin)]):
+    """Publish today's rotation content immediately, bypassing the daily
+    schedule and the SOCIAL_AUTOPOST_ENABLED gate — for testing."""
+    from services.social_content import get_todays_post
+    from services.zernio_service import post_content
+
+    post = get_todays_post()
+    try:
+        result = await post_content(post["caption"], post["headline"], post["subtext"])
+    except Exception as exc:
+        raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail=f"Zernio post failed: {exc}")
+    return {**post, **result}
+
+
+# ---------------------------------------------------------------------------
 # Endpoints
 # ---------------------------------------------------------------------------
 
