@@ -8,9 +8,10 @@ import toast from 'react-hot-toast';
 import Layout from '@/components/Layout';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import PageError from '@/components/PageError';
+import EmailDebtWidget from '@/components/EmailDebtWidget';
 import { relationshipsApi } from '@/lib/api';
 import { apiErrorMessage } from '@/lib/apiError';
-import type { RelationshipContact } from '@/lib/types';
+import type { RelationshipContact, EmailDebt } from '@/lib/types';
 
 const HEALTH_COLORS = {
   excellent: 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-700',
@@ -36,6 +37,7 @@ export default function RelationshipsPage() {
   const router = useRouter();
   const { session, isLoading: sessionLoading } = useSessionContext();
   const [contacts, setContacts] = useState<RelationshipContact[]>([]);
+  const [debts, setDebts] = useState<EmailDebt[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -47,8 +49,12 @@ export default function RelationshipsPage() {
 
   const load = async () => {
     try {
-      const data = await relationshipsApi.getAll();
-      setContacts(data.contacts || []);
+      const [relData, debtData] = await Promise.all([
+        relationshipsApi.getAll(),
+        relationshipsApi.getDebt().catch(() => ({ debts: [] })),
+      ]);
+      setContacts(relData.contacts || []);
+      setDebts(debtData.debts || []);
     } catch (err) {
       setLoadError(true);
       toast.error(apiErrorMessage(err, 'Failed to load relationships'));
@@ -101,6 +107,9 @@ export default function RelationshipsPage() {
               </div>
             ))}
           </div>
+
+          {/* Email debt */}
+          <EmailDebtWidget debts={debts} />
 
           {/* Alerts banner */}
           {alerts.length > 0 && (

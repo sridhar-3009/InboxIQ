@@ -117,6 +117,65 @@ async def scan_recent_emails_for_revenue(user_id: str, limit: int = 50) -> int:
     return count
 
 
+async def get_revenue_at_risk(user_id: str) -> list[dict]:
+    """
+    Cross open revenue signals with relationship health: flag contacts who
+    owe you money / a deal AND whose relationship is declining or at risk.
+    """
+    from services.relationship_service import compute_relationship_scores
+
+    supabase = get_supabase()
+    result = (
+        supabase.table("revenue_signals")
+        .select("*")
+        .eq("user_id", user_id)
+        .eq("status", "open")
+        .execute()
+    )
+    signals = [s for s in (result.data or []) if s.get("amount")]
+    if not signals:
+        return []
+
+    by_sender: dict[str, dict] = {}
+    for s in signals:
+        sender = (s.get("sender") or "").strip().lower()
+        key = sender.split("<")[-1].strip(">").strip() if "<" in sender else sender
+        if not key or "@" not in key:
+            continue
+        entry = by_sender.setdefault(key, {
+            "contact_email": key,
+            "total_amount": 0.0,
+            "currency": s.get("currency") or "INR",
+            "signal_count": 0,
+            "signal_types": [],
+        })
+        entry["total_amount"] += s.get("amount") or 0
+        entry["signal_count"] += 1
+        if s.get("signal_type") not in entry["signal_types"]:
+            entry["signal_types"].append(s.get("signal_type"))
+
+    relationships = await compute_relationship_scores(user_id)
+    rel_by_email = {r["contact_email"]: r for r in relationships}
+
+    at_risk = []
+    for key, entry in by_sender.items():
+        rel = rel_by_email.get(key)
+        if not rel:
+            continue
+        if rel["trend"] == "declining" or rel["health_label"] in ("at_risk", "fair"):
+            at_risk.append({
+                **entry,
+                "contact_name": rel["contact_name"],
+                "health_score": rel["health_score"],
+                "health_label": rel["health_label"],
+                "trend": rel["trend"],
+                "days_since_last_email": rel["days_since_last_email"],
+            })
+
+    at_risk.sort(key=lambda x: x["total_amount"], reverse=True)
+    return at_risk
+
+
 def get_revenue_summary(user_id: str) -> dict:
     """Return revenue pipeline summary for dashboard widget."""
     supabase = get_supabase()

@@ -27,6 +27,8 @@ export default function ReplyEditor({ emailId, draft, suggestedReply, senderName
   const [isGenerating, setIsGenerating] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
   const [confidence, setConfidence] = useState(draft?.confidence_score);
+  const [voiceMatch, setVoiceMatch] = useState(draft?.voice_match_score);
+  const [voiceMatchTrend, setVoiceMatchTrend] = useState(draft?.voice_match_trend);
   const [templatesOpen, setTemplatesOpen] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [sendCountdown, setSendCountdown] = useState<number | null>(null);
@@ -42,6 +44,8 @@ export default function ReplyEditor({ emailId, draft, suggestedReply, senderName
     if (draft?.draft_content) {
       setContent(draft.draft_content);
       setConfidence(draft.confidence_score);
+      setVoiceMatch(draft.voice_match_score);
+      setVoiceMatchTrend(draft.voice_match_trend);
       setHasChanges(false);
     }
   }, [draft?.draft_content]);
@@ -226,8 +230,16 @@ export default function ReplyEditor({ emailId, draft, suggestedReply, senderName
           <Zap className="h-4 w-4 text-amber-500" />
           <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">AI Reply Draft</h3>
           {confidence !== undefined && (
-            <span className="rounded-full bg-green-50 dark:bg-green-900/20 px-2 py-0.5 text-xs font-medium text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800">
+            <span className="rounded-full bg-success/10 dark:bg-success/20 px-2 py-0.5 text-xs font-medium text-success border border-success/30">
               {Math.round(confidence * 100)}% confidence
+            </span>
+          )}
+          {voiceMatch != null && (
+            <span
+              className="rounded-full bg-olive-50 dark:bg-olive-600/20 px-2 py-0.5 text-xs font-medium text-olive-600 dark:text-olive-400 border border-olive-100 dark:border-olive-600/40"
+              title="How closely AI drafts have matched what you actually send, recently"
+            >
+              {voiceMatch}% sounds like you{voiceMatchTrend === 'improving' ? ' ↑' : ''}
             </span>
           )}
         </div>

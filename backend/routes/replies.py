@@ -7,6 +7,7 @@ from database import get_supabase
 from middleware.auth import get_current_user
 from models.user import ReplyDraftResponse, ReplyDraftUpdate
 from services.gmail_service import send_gmail_reply
+from services.voice_match_service import get_voice_match_summary
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/replies", tags=["replies"])
@@ -36,6 +37,12 @@ def _assert_email_owned(supabase, email_id: str, user_id: str) -> dict:
 # ---------------------------------------------------------------------------
 # Routes
 # ---------------------------------------------------------------------------
+
+@router.get("/voice-match", response_model=dict)
+async def voice_match_trend(current_user: Annotated[dict, Depends(get_current_user)]):
+    """How closely AI drafts match what the user actually sends, over time."""
+    return await get_voice_match_summary(_user_id(current_user))
+
 
 @router.get("/email/{email_id}", response_model=dict)
 async def get_reply_draft(

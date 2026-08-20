@@ -15,7 +15,7 @@ from slowapi.errors import RateLimitExceeded
 
 from config import settings
 from limiter import limiter
-from routes import auth, emails, actions, replies, integrations, settings as settings_routes, billing, contacts, outlook, calendar, teams, webhooks as webhooks_routes, autoassign, crm_integrations, admin as admin_routes, waitlist as waitlist_routes, push as push_routes, scheduled as scheduled_routes, newsletter as newsletter_routes, relationships as relationships_routes, revenue as revenue_routes, sla as sla_routes, sequences as sequences_routes, knowledge as knowledge_routes, briefs as briefs_routes, quotes as quotes_routes, shop as shop_routes
+from routes import auth, emails, actions, replies, integrations, settings as settings_routes, billing, contacts, outlook, calendar, teams, webhooks as webhooks_routes, autoassign, crm_integrations, admin as admin_routes, waitlist as waitlist_routes, push as push_routes, scheduled as scheduled_routes, newsletter as newsletter_routes, relationships as relationships_routes, revenue as revenue_routes, sla as sla_routes, sequences as sequences_routes, knowledge as knowledge_routes, briefs as briefs_routes, quotes as quotes_routes, shop as shop_routes, public as public_routes
 from workers.email_listener import start_email_listener, stop_email_listener
 
 # ---------------------------------------------------------------------------
@@ -168,6 +168,7 @@ app.include_router(autoassign.router, prefix="/api")
 app.include_router(crm_integrations.router, prefix="/api")
 app.include_router(admin_routes.router, prefix="/api")
 app.include_router(waitlist_routes.router)
+app.include_router(public_routes.router)
 app.include_router(push_routes.router, prefix="/api")
 app.include_router(scheduled_routes.router, prefix="/api")
 app.include_router(newsletter_routes.router, prefix="/api")

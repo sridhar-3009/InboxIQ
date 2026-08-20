@@ -5,6 +5,7 @@ from services.revenue_service import (
     get_revenue_summary,
     extract_revenue_signals_from_email,
     scan_recent_emails_for_revenue,
+    get_revenue_at_risk,
 )
 from database import get_supabase
 
@@ -14,6 +15,13 @@ router = APIRouter(prefix="/revenue", tags=["revenue"])
 @router.get("/summary")
 async def revenue_summary(current_user: dict = Depends(get_current_user)):
     return get_revenue_summary(current_user["id"])
+
+
+@router.get("/at-risk")
+async def revenue_at_risk(current_user: dict = Depends(get_current_user)):
+    """Open deals/invoices tied to contacts whose relationship is declining or at risk."""
+    at_risk = await get_revenue_at_risk(current_user["id"])
+    return {"at_risk": at_risk, "total": len(at_risk)}
 
 
 @router.post("/scan")

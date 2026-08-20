@@ -15,6 +15,7 @@ from services import email_service
 from services.ai_processor import process_email
 from services.gmail_service import send_gmail_reply, get_email_attachments, get_attachment_data
 from services.razorpay_service import PLAN_LIMITS
+from services.voice_match_service import get_voice_match_summary
 from workers.email_listener import _process_user_emails
 
 logger = logging.getLogger(__name__)
@@ -1101,12 +1102,15 @@ async def get_email_reply_draft(
             detail="No reply draft found for this email.",
         )
     draft = result.data
+    voice_match = await get_voice_match_summary(user_id)
     return {
         **draft,
         "draft_content": draft.get("draft_text", ""),
         "confidence_score": draft.get("confidence", 0.0),
         "tone": "professional",
         "is_sent": draft.get("sent", False),
+        "voice_match_score": voice_match["score"],
+        "voice_match_trend": voice_match["trend"],
     }
 
 

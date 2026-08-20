@@ -24,6 +24,7 @@ import type {
   ActivityLogEntry,
   AdminStats,
   CalendarEvent,
+  VoiceMatchSummary,
 } from './types';
 
 // ─── Axios Instance ───────────────────────────────────────────────────────────
@@ -395,6 +396,11 @@ export const repliesApi = {
     });
     return data;
   },
+
+  getVoiceMatch: async (): Promise<VoiceMatchSummary> => {
+    const { data } = await api.get('/api/replies/voice-match');
+    return data;
+  },
 };
 
 // ─── Integrations Endpoints ───────────────────────────────────────────────────
@@ -749,6 +755,7 @@ export const contactsApi = {
 export const relationshipsApi = {
   getAll: async () => { const { data } = await api.get('/api/relationships'); return data; },
   getSentiment: async (email: string, days = 90) => { const { data } = await api.get(`/api/relationships/${encodeURIComponent(email)}/sentiment?days=${days}`); return data; },
+  getDebt: async () => { const { data } = await api.get('/api/relationships/debt'); return data; },
 };
 
 // ─── Revenue Endpoints ────────────────────────────────────────────────────────
@@ -758,6 +765,7 @@ export const revenueApi = {
   scan: async () => { const { data } = await api.post('/api/revenue/scan'); return data; },
   extractFromEmail: async (emailId: string) => { const { data } = await api.post(`/api/revenue/signals/${emailId}`); return data; },
   updateSignal: async (signalId: string, status: string) => { const { data } = await api.patch(`/api/revenue/signals/${signalId}`, { status }); return data; },
+  getAtRisk: async () => { const { data } = await api.get('/api/revenue/at-risk'); return data; },
 };
 
 // ─── SLA Endpoints ────────────────────────────────────────────────────────────

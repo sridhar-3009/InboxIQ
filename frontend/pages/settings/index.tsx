@@ -22,6 +22,8 @@ import {
   Plus,
   Download,
   RefreshCw,
+  Copy,
+  BadgeCheck,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import Layout from '@/components/Layout';
@@ -63,6 +65,33 @@ function ProfileTab({
     email_signature: settings.email_signature ?? '',
   });
   const [isSaving, setIsSaving] = useState(false);
+  const [badgeEnabled, setBadgeEnabled] = useState(settings.badge_enabled ?? false);
+  const [badgeSaving, setBadgeSaving] = useState(false);
+
+  const badgeUrl = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/public/badge/${settings.id}/response-time.svg`;
+  const badgeEmbed = `<a href="https://mailair.company"><img src="${badgeUrl}" alt="Mailair response time badge" /></a>`;
+
+  const handleBadgeToggle = async () => {
+    const next = !badgeEnabled;
+    setBadgeEnabled(next);
+    setBadgeSaving(true);
+    try {
+      await onSave({ badge_enabled: next });
+    } catch {
+      setBadgeEnabled(!next);
+    } finally {
+      setBadgeSaving(false);
+    }
+  };
+
+  const copyEmbed = async () => {
+    try {
+      await navigator.clipboard.writeText(badgeEmbed);
+      toast.success('Embed code copied');
+    } catch {
+      toast.error('Could not copy — select and copy manually');
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -144,6 +173,47 @@ function ProfileTab({
           className="input-field resize-none"
           placeholder="Best regards,&#10;Your Name&#10;Company | +1 555-0100"
         />
+      </div>
+
+      <div className="card p-6">
+        <div className="flex items-start justify-between gap-4 mb-1">
+          <div className="flex items-center gap-2">
+            <BadgeCheck className="h-4 w-4 text-primary-600" />
+            <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100">Public Response-Time Badge</h3>
+          </div>
+          <button
+            type="button"
+            onClick={handleBadgeToggle}
+            disabled={badgeSaving}
+            className={clsx(
+              'relative h-6 w-11 flex-shrink-0 rounded-full transition-colors disabled:opacity-50',
+              badgeEnabled ? 'bg-primary-600' : 'bg-gray-300 dark:bg-gray-600'
+            )}
+          >
+            <span
+              className={clsx(
+                'absolute top-0.5 h-5 w-5 rounded-full bg-white transition-transform',
+                badgeEnabled ? 'translate-x-5' : 'translate-x-0.5'
+              )}
+            />
+          </button>
+        </div>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+          Show a live &quot;avg response time&quot; badge on your own site, computed from your real reply history. Nothing else about your inbox is exposed.
+        </p>
+        {badgeEnabled && (
+          <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/40 p-3.5">
+            <div className="flex items-center justify-between gap-3 mb-2">
+              <p className="text-xs font-medium text-gray-500 dark:text-gray-400">Embed on your website</p>
+              <button type="button" onClick={copyEmbed} className="inline-flex items-center gap-1.5 text-xs font-medium text-primary-600 hover:text-primary-700">
+                <Copy className="h-3.5 w-3.5" /> Copy
+              </button>
+            </div>
+            <code className="block text-xs text-gray-600 dark:text-gray-300 break-all font-mono">{badgeEmbed}</code>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={badgeUrl} alt="Response time badge preview" className="mt-3" />
+          </div>
+        )}
       </div>
 
       <div className="flex justify-end">

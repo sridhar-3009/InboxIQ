@@ -9,7 +9,7 @@ import LoadingSpinner from '@/components/LoadingSpinner';
 import PageError from '@/components/PageError';
 import { revenueApi } from '@/lib/api';
 import { apiErrorMessage } from '@/lib/apiError';
-import type { RevenueSummary, RevenueSignal } from '@/lib/types';
+import type { RevenueSummary, RevenueSignal, RevenueAtRisk } from '@/lib/types';
 
 const TYPE_COLORS: Record<string, string> = {
   quote:       'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300',
@@ -36,6 +36,7 @@ export default function RevenuePage() {
   const router = useRouter();
   const { session, isLoading: sessionLoading } = useSessionContext();
   const [summary, setSummary] = useState<RevenueSummary | null>(null);
+  const [atRisk, setAtRisk] = useState<RevenueAtRisk[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
   const [scanning, setScanning] = useState(false);
@@ -47,8 +48,12 @@ export default function RevenuePage() {
 
   const load = async () => {
     try {
-      const data = await revenueApi.getSummary();
-      setSummary(data);
+      const [summaryData, riskData] = await Promise.all([
+        revenueApi.getSummary(),
+        revenueApi.getAtRisk().catch(() => ({ at_risk: [] })),
+      ]);
+      setSummary(summaryData);
+      setAtRisk(riskData.at_risk || []);
     } catch (err) {
       setLoadError(true);
       toast.error(apiErrorMessage(err, 'Failed to load revenue data'));
@@ -143,6 +148,37 @@ export default function RevenuePage() {
                       <span key={type} className={`rounded-full px-3 py-1 text-xs font-semibold ${TYPE_COLORS[type] || 'bg-gray-100 text-gray-600'}`}>
                         {type} ({count})
                       </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Revenue at risk */}
+              {atRisk.length > 0 && (
+                <div className="card p-5 border-urgent/30">
+                  <div className="flex items-center gap-2 mb-1">
+                    <AlertTriangle className="h-4 w-4 text-urgent" />
+                    <h3 className="font-serif text-lg text-gray-900 dark:text-gray-100">Revenue at risk</h3>
+                  </div>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                    Open deals tied to clients whose relationship is fading — worth a check-in before the money follows.
+                  </p>
+                  <div className="space-y-2.5">
+                    {atRisk.map((r) => (
+                      <div
+                        key={r.contact_email}
+                        className="flex items-center justify-between gap-3 rounded-lg border border-urgent/20 bg-urgent/5 px-3.5 py-2.5"
+                      >
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium text-gray-800 dark:text-gray-200 truncate">{r.contact_name}</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                            {r.signal_count} open signal{r.signal_count !== 1 ? 's' : ''} · {r.trend === 'declining' ? 'declining contact' : `${r.health_label.replace('_', ' ')} health`} · last email {r.days_since_last_email}d ago
+                          </p>
+                        </div>
+                        <span className="flex-shrink-0 text-sm font-semibold text-urgent">
+                          {fmt(r.total_amount, r.currency)}
+                        </span>
+                      </div>
                     ))}
                   </div>
                 </div>

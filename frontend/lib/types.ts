@@ -109,6 +109,8 @@ export interface ReplyDraft {
   sent_at?: string;
   created_at: string;
   updated_at: string;
+  voice_match_score?: number | null;
+  voice_match_trend?: 'improving' | 'declining' | 'steady' | 'new';
 }
 
 // ─── User / Profile Types ─────────────────────────────────────────────────────
@@ -147,6 +149,7 @@ export interface UserSettings {
   sync_days_back?: number | null;
   sync_sender_allowlist?: string[] | null;
   sync_sender_blocklist?: string[] | null;
+  badge_enabled?: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -418,6 +421,16 @@ export interface RelationshipContact {
   alert_message: string | null;
 }
 
+export interface EmailDebt {
+  email_id: string;
+  contact_email: string;
+  contact_name: string;
+  subject: string;
+  category: string | null;
+  days_owed: number;
+  received_at: string;
+}
+
 export interface SentimentPoint {
   week: string;
   email_count: number;
@@ -449,6 +462,27 @@ export interface RevenueSummary {
   high_urgency_count: number;
   high_urgency: RevenueSignal[];
   signals: RevenueSignal[];
+}
+
+export interface RevenueAtRisk {
+  contact_email: string;
+  contact_name: string;
+  total_amount: number;
+  currency: string;
+  signal_count: number;
+  signal_types: string[];
+  health_score: number;
+  health_label: 'excellent' | 'good' | 'fair' | 'at_risk';
+  trend: 'growing' | 'stable' | 'declining' | 'new';
+  days_since_last_email: number;
+}
+
+export interface VoiceMatchSummary {
+  score: number | null;
+  trend: 'improving' | 'declining' | 'steady' | 'new';
+  samples: number;
+  history: { sent_at: string; score: number }[];
+  message: string | null;
 }
 
 // ─── SLA Types ────────────────────────────────────────────────────────────────

@@ -116,6 +116,79 @@ async def compute_relationship_scores(user_id: str) -> list[dict]:
     return scores
 
 
+async def get_email_debt(user_id: str) -> list[dict]:
+    """
+    Find the oldest un-replied email per contact — "you owe them a reply."
+
+    Only considers emails that plausibly need a response (urgent /
+    needs_response) and have no reply_drafts row marked as sent.
+    """
+    supabase = get_supabase()
+    now = datetime.now(timezone.utc)
+    cutoff = (now - timedelta(days=45)).isoformat()
+
+    emails_result = (
+        supabase.table("emails")
+        .select("id, sender, subject, received_at, category")
+        .eq("user_id", user_id)
+        .neq("dismissed", True)
+        .in_("category", ["needs_response", "urgent"])
+        .gte("received_at", cutoff)
+        .order("received_at", desc=True)
+        .execute()
+    )
+    emails = emails_result.data or []
+    if not emails:
+        return []
+
+    email_ids = [e["id"] for e in emails]
+    drafts_result = (
+        supabase.table("reply_drafts")
+        .select("email_id, sent")
+        .in_("email_id", email_ids)
+        .eq("sent", True)
+        .execute()
+    )
+    replied_ids = {d["email_id"] for d in (drafts_result.data or [])}
+
+    # Keep only the most recent un-replied email per sender (list is already
+    # ordered newest-first, so the first hit per key wins).
+    by_sender: dict[str, dict] = {}
+    for e in emails:
+        if e["id"] in replied_ids:
+            continue
+        sender = e.get("sender", "") or ""
+        key = sender.split("<")[-1].strip(">").strip().lower() if "<" in sender else sender.strip().lower()
+        if not key or "@" not in key:
+            continue
+        if key not in by_sender:
+            by_sender[key] = e
+
+    debts = []
+    for key, e in by_sender.items():
+        first = e.get("sender", "") or ""
+        name = first.split("<")[0].strip().strip('"') if "<" in first else key
+        try:
+            received_dt = datetime.fromisoformat(e["received_at"].replace("Z", "+00:00"))
+            days_owed = (now - received_dt).days
+        except Exception:
+            continue
+        if days_owed < 1:
+            continue
+        debts.append({
+            "email_id": e["id"],
+            "contact_email": key,
+            "contact_name": name,
+            "subject": e.get("subject", ""),
+            "category": e.get("category"),
+            "days_owed": days_owed,
+            "received_at": e.get("received_at"),
+        })
+
+    debts.sort(key=lambda x: x["days_owed"], reverse=True)
+    return debts
+
+
 async def get_sentiment_history(user_id: str, contact_email: str, days: int = 90) -> list[dict]:
     """Return weekly sentiment trend for a specific contact."""
     supabase = get_supabase()
