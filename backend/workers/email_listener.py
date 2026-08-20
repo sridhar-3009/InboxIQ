@@ -285,6 +285,7 @@ def start_email_listener() -> AsyncIOScheduler:
     from services.newsletter_service import send_weekly_ai_newsletter
     from services.sequence_service import flush_sequence_steps
     from workers.social_poster import post_daily_social
+    from database import keep_supabase_alive
 
     scheduler.add_job(
         poll_all_users,
@@ -364,6 +365,15 @@ def start_email_listener() -> AsyncIOScheduler:
         name="Daily Social Post (Instagram / LinkedIn via Zernio)",
         replace_existing=True,
         misfire_grace_time=1800,
+    )
+    scheduler.add_job(
+        keep_supabase_alive,
+        trigger="interval",
+        days=3,
+        id="supabase_keepalive",
+        name="Supabase Keep-Alive Ping (avoids the 7-day auto-pause)",
+        replace_existing=True,
+        misfire_grace_time=3600,
     )
     scheduler.start()
     logger.info("Email listener scheduler started (every 5 minutes).")

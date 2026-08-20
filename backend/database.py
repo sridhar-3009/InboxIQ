@@ -20,6 +20,20 @@ def get_supabase() -> Client:
     return _supabase_client
 
 
+async def keep_supabase_alive() -> None:
+    """
+    Free/low-tier Supabase projects auto-pause after 7 days with no
+    database activity. A trivial read every few days keeps it active
+    regardless of whether any user activity happens to touch the DB in
+    that window (see APScheduler job "supabase_keepalive").
+    """
+    try:
+        get_supabase().table("user_profiles").select("id").limit(1).execute()
+        logger.info("Supabase keep-alive ping succeeded.")
+    except Exception as exc:
+        logger.error("Supabase keep-alive ping failed: %s", exc)
+
+
 # ---------------------------------------------------------------------------
 # pgvector helpers
 # ---------------------------------------------------------------------------
