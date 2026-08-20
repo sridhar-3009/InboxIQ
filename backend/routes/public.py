@@ -3,6 +3,7 @@ from fastapi import APIRouter
 from fastapi.responses import Response
 
 from services.badge_service import generate_response_time_badge_svg
+from services.benchmark_service import get_benchmark, list_available_industries
 
 router = APIRouter()
 
@@ -15,3 +16,13 @@ async def response_time_badge(user_id: str):
         media_type="image/svg+xml",
         headers={"Cache-Control": "public, max-age=3600"},
     )
+
+
+@router.get("/api/public/benchmarks")
+async def benchmarks(industry: str | None = None):
+    return get_benchmark(industry)
+
+
+@router.get("/api/public/benchmarks/industries")
+async def benchmark_industries():
+    return {"industries": list_available_industries()}

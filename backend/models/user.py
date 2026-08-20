@@ -29,6 +29,8 @@ class UserUpdate(BaseModel):
     vacation_message: Optional[str] = None
     email_signature: Optional[str] = None
     badge_enabled: Optional[bool] = None
+    industry: Optional[str] = None
+    benchmark_opt_in: Optional[bool] = None
     # Email digest preferences
     digest_enabled: Optional[bool] = None
     digest_frequency: Optional[str] = None  # 'daily' | 'weekly'

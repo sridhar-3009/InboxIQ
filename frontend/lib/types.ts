@@ -150,6 +150,8 @@ export interface UserSettings {
   sync_sender_allowlist?: string[] | null;
   sync_sender_blocklist?: string[] | null;
   badge_enabled?: boolean;
+  industry?: string | null;
+  benchmark_opt_in?: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -248,6 +250,18 @@ export interface ContactProfile {
   recent_subjects: string[];
 }
 
+export interface ClientTouchpoint {
+  id: string;
+  contact_email: string;
+  contact_name: string | null;
+  channel: 'call' | 'sms' | 'whatsapp' | 'meeting' | 'other';
+  direction: 'inbound' | 'outbound';
+  summary: string | null;
+  duration_minutes: number | null;
+  occurred_at: string;
+  created_at: string;
+}
+
 export interface ContactDetail extends ContactProfile {
   replied_count: number;
   first_email_at: string;
@@ -260,6 +274,7 @@ export interface ContactDetail extends ContactProfile {
     ai_summary: string | null;
     is_read: boolean;
   }>;
+  touchpoints: ClientTouchpoint[];
 }
 
 // ─── Quote / Proposal Types ───────────────────────────────────────────────────
@@ -415,10 +430,20 @@ export interface RelationshipContact {
   days_since_last_email: number;
   emails_30d: number;
   emails_90d: number;
+  touchpoints_30d?: number;
   trend: 'growing' | 'stable' | 'declining' | 'new';
   last_email_at: string;
   alert: boolean;
   alert_message: string | null;
+}
+
+export interface Benchmark {
+  industry: string | null;
+  cohort_size: number;
+  median_response_time: string | null;
+  median_response_hours: number | null;
+  fastest_quartile_hours?: number | null;
+  message: string | null;
 }
 
 export interface EmailDebt {

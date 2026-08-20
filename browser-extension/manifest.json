@@ -1,10 +1,14 @@
 {
   "manifest_version": 3,
   "name": "Mailair — AI Email Composer",
-  "version": "1.0.0",
-  "description": "Compose AI-powered emails from anywhere. Powered by Mailair.",
+  "version": "1.1.0",
+  "description": "AI-drafted email replies and a live priority panel for Gmail. Powered by Mailair.",
   "permissions": ["activeTab", "storage"],
-  "host_permissions": ["https://mailair.company/*", "http://localhost:8000/*"],
+  "host_permissions": [
+    "https://mailair.company/*",
+    "https://inboxiq-sby6.onrender.com/*",
+    "http://localhost:8000/*"
+  ],
   "action": {
     "default_popup": "popup.html",
     "default_icon": {

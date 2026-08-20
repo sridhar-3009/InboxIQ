@@ -22,7 +22,10 @@ def _score_to_health(score: float) -> str:
 
 
 async def compute_relationship_scores(user_id: str) -> list[dict]:
-    """Compute relationship health for all contacts of a user."""
+    """Compute relationship health for all contacts — email plus any
+    manually-logged calls/SMS/WhatsApp/meetings (client_touchpoints)."""
+    from services.touchpoint_service import get_touchpoints_by_contact
+
     supabase = get_supabase()
     now = datetime.now(timezone.utc)
     cutoff_30d = (now - timedelta(days=30)).isoformat()
@@ -50,30 +53,43 @@ async def compute_relationship_scores(user_id: str) -> list[dict]:
         if email and "@" in email:
             by_sender[email].append(row)
 
+    touchpoints_by_contact = get_touchpoints_by_contact(user_id, days=90)
+    # Contacts reachable only by call/SMS/WhatsApp (no email in-window) still
+    # count as relationships — seed them with an empty email list.
+    for contact_email in touchpoints_by_contact:
+        by_sender.setdefault(contact_email, [])
+
     scores = []
     for email, emails in by_sender.items():
-        if len(emails) < 2:
+        touchpoints = touchpoints_by_contact.get(email, [])
+        if len(emails) < 2 and len(touchpoints) < 1:
             continue
 
-        # Parse name
-        first = emails[0].get("sender", "") or ""
-        name = first.split("<")[0].strip().strip('"') if "<" in first else email
+        # Parse name (from the email if we have one, else from a logged touchpoint)
+        if emails:
+            first = emails[0].get("sender", "") or ""
+            name = first.split("<")[0].strip().strip('"') if "<" in first else email
+        else:
+            name = email
 
-        last_email = emails[0].get("received_at", "")
+        last_email = emails[0].get("received_at", "") if emails else None
+        last_touchpoint = touchpoints[0].get("occurred_at", "") if touchpoints else None
+        last_contact = max([t for t in (last_email, last_touchpoint) if t], default=None)
         try:
-            last_dt = datetime.fromisoformat(last_email.replace("Z", "+00:00"))
+            last_dt = datetime.fromisoformat(last_contact.replace("Z", "+00:00"))
             days_since = (now - last_dt).days
         except Exception:
             days_since = 999
 
         count_30d = sum(1 for e in emails if e.get("received_at", "") >= cutoff_30d)
         count_90d = len(emails)
+        touchpoints_30d = sum(1 for t in touchpoints if t.get("occurred_at", "") >= cutoff_30d)
 
         # Recency score (0-40): 40 if contacted today, 0 if > 30 days
         recency_score = max(0, 40 - (days_since * 1.5))
 
-        # Frequency score (0-30): based on emails per month
-        freq_score = min(30, count_30d * 6)
+        # Frequency score (0-30): emails + calls/texts per month, capped
+        freq_score = min(30, (count_30d + touchpoints_30d) * 5)
 
         # Urgency/importance score (0-20): high priority emails = important relationship
         high_priority = sum(1 for e in emails[:20] if (e.get("priority") or 0) >= 6)
@@ -86,14 +102,16 @@ async def compute_relationship_scores(user_id: str) -> list[dict]:
         health_score = int(recency_score + freq_score + importance_score - response_penalty)
         health_score = max(0, min(100, health_score))
 
-        # Trend: compare last 30d vs previous 30d
+        # Trend: compare last 30d vs previous 30d (email + touchpoints combined)
         prev_cutoff = (now - timedelta(days=60)).isoformat()
         count_prev_30d = sum(1 for e in emails if prev_cutoff <= e.get("received_at", "") < cutoff_30d)
-        if count_prev_30d == 0:
+        touchpoints_prev_30d = sum(1 for t in touchpoints if prev_cutoff <= t.get("occurred_at", "") < cutoff_30d)
+        recent_total, prev_total = count_30d + touchpoints_30d, count_prev_30d + touchpoints_prev_30d
+        if prev_total == 0:
             trend = "new"
-        elif count_30d > count_prev_30d * 1.2:
+        elif recent_total > prev_total * 1.2:
             trend = "growing"
-        elif count_30d < count_prev_30d * 0.7:
+        elif recent_total < prev_total * 0.7:
             trend = "declining"
         else:
             trend = "stable"
@@ -106,10 +124,11 @@ async def compute_relationship_scores(user_id: str) -> list[dict]:
             "days_since_last_email": days_since,
             "emails_30d": count_30d,
             "emails_90d": count_90d,
+            "touchpoints_30d": touchpoints_30d,
             "trend": trend,
-            "last_email_at": last_email,
-            "alert": days_since > 14 and count_30d > 2,
-            "alert_message": f"No contact in {days_since} days" if days_since > 14 and count_30d > 2 else None,
+            "last_email_at": last_contact,
+            "alert": days_since > 14 and (count_30d + touchpoints_30d) > 2,
+            "alert_message": f"No contact in {days_since} days" if days_since > 14 and (count_30d + touchpoints_30d) > 2 else None,
         })
 
     scores.sort(key=lambda x: x["health_score"], reverse=True)

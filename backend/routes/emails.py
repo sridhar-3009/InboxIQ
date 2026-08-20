@@ -1323,10 +1323,14 @@ async def generate_reply_with_instructions(
     tone = "professional and friendly"
     try:
         profile = supabase.table("user_profiles").select(
-            "company_description, tone_preference"
+            "company_description, tone_preference, industry"
         ).eq("id", user_id).single().execute()
         if profile.data:
-            company_description = profile.data.get("company_description") or company_description
+            company_description = (
+                profile.data.get("company_description")
+                or (f"a {profile.data['industry']} business" if profile.data.get("industry") else None)
+                or company_description
+            )
             tone = profile.data.get("tone_preference") or tone
     except Exception:
         pass
@@ -1515,10 +1519,14 @@ async def generate_compose_draft(
     email_signature = ""
     try:
         profile = supabase.table("user_profiles").select(
-            "company_description, tone_preference, email_signature"
+            "company_description, tone_preference, email_signature, industry"
         ).eq("id", user_id).single().execute()
         if profile.data:
-            company_description = profile.data.get("company_description") or company_description
+            company_description = (
+                profile.data.get("company_description")
+                or (f"a {profile.data['industry']} business" if profile.data.get("industry") else None)
+                or company_description
+            )
             tone = profile.data.get("tone_preference") or tone
             email_signature = profile.data.get("email_signature") or ""
     except Exception:

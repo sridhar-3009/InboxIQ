@@ -1,0 +1,127 @@
+/* Mailair priority panel — injected into Gmail */
+
+#mailair-priority-panel {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 300px;
+  max-height: 380px;
+  background: #faf3ec;
+  border: 1px solid #e7e0d4;
+  border-radius: 14px;
+  box-shadow: 0 12px 32px -8px rgba(94, 42, 26, 0.22), 0 4px 12px -4px rgba(94, 42, 26, 0.12);
+  font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  z-index: 9999;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+#mailair-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: #b04723;
+  color: #fff;
+}
+
+#mailair-panel-title {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+#mailair-panel-toggle {
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: #fff;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+#mailair-panel-toggle:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+#mailair-panel-body {
+  padding: 10px;
+  overflow-y: auto;
+}
+
+#mailair-panel-empty {
+  margin: 8px 4px;
+  font-size: 12px;
+  color: #83745e;
+  line-height: 1.5;
+}
+
+#mailair-panel-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mailair-panel-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.mailair-panel-item:hover {
+  background: #f3efe8;
+}
+
+.mailair-item-dot {
+  flex-shrink: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  margin-top: 5px;
+  background: #a99b83;
+}
+
+.mailair-item-dot.mailair-cat-urgent { background: #b5432f; }
+.mailair-item-dot.mailair-cat-needs_response { background: #b04723; }
+
+.mailair-item-text {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.mailair-item-sender {
+  font-size: 12px;
+  font-weight: 600;
+  color: #221c16;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mailair-item-subject {
+  font-size: 11px;
+  color: #635646;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mailair-item-cat {
+  flex-shrink: 0;
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #a99b83;
+  margin-top: 3px;
+}

@@ -21,6 +21,7 @@ import { formatDistanceToNow } from 'date-fns';
 import clsx from 'clsx';
 import Layout from '@/components/Layout';
 import PageError from '@/components/PageError';
+import TouchpointPanel from '@/components/TouchpointPanel';
 import { contactsApi } from '@/lib/api';
 import { apiErrorMessage } from '@/lib/apiError';
 import type { ContactProfile, ContactDetail } from '@/lib/types';
@@ -313,6 +314,9 @@ function ContactDrawer({
                   )}
                 </div>
               )}
+
+              {/* Calls / texts / meetings */}
+              <TouchpointPanel contactEmail={detail.email} contactName={detail.name} touchpoints={detail.touchpoints} />
 
               {/* Email history */}
               <div>

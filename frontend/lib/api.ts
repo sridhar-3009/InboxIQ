@@ -25,6 +25,8 @@ import type {
   AdminStats,
   CalendarEvent,
   VoiceMatchSummary,
+  ClientTouchpoint,
+  Benchmark,
 } from './types';
 
 // ─── Axios Instance ───────────────────────────────────────────────────────────
@@ -756,6 +758,43 @@ export const relationshipsApi = {
   getAll: async () => { const { data } = await api.get('/api/relationships'); return data; },
   getSentiment: async (email: string, days = 90) => { const { data } = await api.get(`/api/relationships/${encodeURIComponent(email)}/sentiment?days=${days}`); return data; },
   getDebt: async () => { const { data } = await api.get('/api/relationships/debt'); return data; },
+};
+
+// ─── Touchpoint Endpoints (calls / SMS / WhatsApp / meetings) ─────────────────
+
+export const touchpointsApi = {
+  list: async (contactEmail: string): Promise<{ touchpoints: ClientTouchpoint[]; total: number }> => {
+    const { data } = await api.get('/api/touchpoints', { params: { contact_email: contactEmail } });
+    return data;
+  },
+  log: async (payload: {
+    contact_email: string;
+    contact_name?: string;
+    channel: ClientTouchpoint['channel'];
+    direction: ClientTouchpoint['direction'];
+    summary?: string;
+    duration_minutes?: number;
+    occurred_at?: string;
+  }): Promise<ClientTouchpoint> => {
+    const { data } = await api.post('/api/touchpoints', payload);
+    return data;
+  },
+  remove: async (id: string): Promise<void> => {
+    await api.delete(`/api/touchpoints/${id}`);
+  },
+};
+
+// ─── Public Benchmark Endpoints ────────────────────────────────────────────────
+
+export const benchmarksApi = {
+  get: async (industry?: string): Promise<Benchmark> => {
+    const { data } = await api.get('/api/public/benchmarks', { params: industry ? { industry } : {} });
+    return data;
+  },
+  industries: async (): Promise<{ industries: { industry: string; count: number }[] }> => {
+    const { data } = await api.get('/api/public/benchmarks/industries');
+    return data;
+  },
 };
 
 // ─── Revenue Endpoints ────────────────────────────────────────────────────────

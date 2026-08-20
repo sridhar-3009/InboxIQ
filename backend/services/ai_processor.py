@@ -116,7 +116,7 @@ async def process_email(email: dict) -> dict | None:
     try:
         profile_result = (
             supabase.table("user_profiles")
-            .select("company_description, tone_preference, slack_webhook_url, vacation_mode, vacation_message, email_signature")
+            .select("company_description, tone_preference, slack_webhook_url, vacation_mode, vacation_message, email_signature, industry")
             .eq("id", user_id)
             .single()
             .execute()
@@ -124,7 +124,9 @@ async def process_email(email: dict) -> dict | None:
         if profile_result.data:
             profile = profile_result.data
             company_description = (
-                profile.get("company_description") or company_description
+                profile.get("company_description")
+                or (f"a {profile['industry']} business" if profile.get("industry") else None)
+                or company_description
             )
             tone = profile.get("tone_preference") or tone
             slack_webhook_url = profile.get("slack_webhook_url") or ""

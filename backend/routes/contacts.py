@@ -6,6 +6,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Query
 from database import get_supabase
 from middleware.auth import get_current_user
+from services.touchpoint_service import get_touchpoints
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/contacts", tags=["contacts"])
@@ -171,6 +172,7 @@ async def get_contact(
                 }
                 for e in emails[:20]
             ],
+            "touchpoints": get_touchpoints(user_id, email, limit=20),
         }
     except HTTPException:
         raise

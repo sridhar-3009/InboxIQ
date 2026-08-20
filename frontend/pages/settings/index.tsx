@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useSessionContext } from '@supabase/auth-helpers-react';
@@ -24,6 +25,7 @@ import {
   RefreshCw,
   Copy,
   BadgeCheck,
+  Puzzle,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import Layout from '@/components/Layout';
@@ -34,6 +36,7 @@ import { useSettings, useGmailStatus } from '@/lib/hooks';
 import { apiErrorMessage } from '@/lib/apiError';
 import { settingsApi, integrationsApi, outlookApi, calendarApi, gdprApi, webhooksApi, crmApi, pushApi, newsletterApi, emailsApi, type Webhook } from '@/lib/api';
 import { registerPushSubscription, unregisterPushSubscription } from '@/lib/push';
+import { supabase } from '@/lib/supabase';
 import { loadTemplates, saveTemplates, createTemplate, type EmailTemplate } from '@/lib/templates';
 import type { UserSettings, TonePreference, NotificationFrequency } from '@/lib/types';
 import clsx from 'clsx';
@@ -63,10 +66,37 @@ function ProfileTab({
     company_description: settings.company_description ?? '',
     tone_preference: settings.tone_preference ?? 'professional',
     email_signature: settings.email_signature ?? '',
+    industry: settings.industry ?? '',
   });
   const [isSaving, setIsSaving] = useState(false);
   const [badgeEnabled, setBadgeEnabled] = useState(settings.badge_enabled ?? false);
   const [badgeSaving, setBadgeSaving] = useState(false);
+  const [benchmarkOptIn, setBenchmarkOptIn] = useState(settings.benchmark_opt_in ?? false);
+  const [benchmarkSaving, setBenchmarkSaving] = useState(false);
+
+  const handleBenchmarkToggle = async () => {
+    const next = !benchmarkOptIn;
+    setBenchmarkOptIn(next);
+    setBenchmarkSaving(true);
+    try {
+      await onSave({ benchmark_opt_in: next });
+    } catch {
+      setBenchmarkOptIn(!next);
+    } finally {
+      setBenchmarkSaving(false);
+    }
+  };
+
+  const INDUSTRIES = [
+    'Web / Design Agency',
+    'Marketing Agency',
+    'Consulting',
+    'Freelance / Solo',
+    'Real Estate',
+    'Legal',
+    'Accounting / Finance',
+    'Other',
+  ];
 
   const badgeUrl = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/public/badge/${settings.id}/response-time.svg`;
   const badgeEmbed = `<a href="https://mailair.company"><img src="${badgeUrl}" alt="Mailair response time badge" /></a>`;
@@ -90,6 +120,21 @@ function ProfileTab({
       toast.success('Embed code copied');
     } catch {
       toast.error('Could not copy — select and copy manually');
+    }
+  };
+
+  const copyExtensionToken = async () => {
+    const { data } = await supabase.auth.getSession();
+    const token = data.session?.access_token;
+    if (!token) {
+      toast.error('No active session — try signing in again');
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(token);
+      toast.success('Token copied — paste into the extension. It expires after about an hour, so re-copy if it stops working.');
+    } catch {
+      toast.error('Could not copy to clipboard');
     }
   };
 
@@ -127,6 +172,24 @@ function ProfileTab({
             />
             <p className="mt-1.5 text-xs text-gray-400 dark:text-gray-500">
               This context helps AI draft better replies and understand your email priorities.
+            </p>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+              Industry
+            </label>
+            <select
+              value={form.industry}
+              onChange={(e) => setForm({ ...form, industry: e.target.value })}
+              className="input-field"
+            >
+              <option value="">Not set</option>
+              {INDUSTRIES.map((i) => (
+                <option key={i} value={i}>{i}</option>
+              ))}
+            </select>
+            <p className="mt-1.5 text-xs text-gray-400 dark:text-gray-500">
+              Used to group you into the right cohort for response-time benchmarks.
             </p>
           </div>
         </div>
@@ -214,6 +277,61 @@ function ProfileTab({
             <img src={badgeUrl} alt="Response time badge preview" className="mt-3" />
           </div>
         )}
+
+        <div className="flex items-start justify-between gap-4 mt-5 pt-5 border-t border-gray-100 dark:border-gray-700">
+          <div>
+            <p className="text-sm font-medium text-gray-800 dark:text-gray-200">Contribute to industry benchmarks</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 max-w-sm">
+              Anonymously include your response time in the public {form.industry || 'industry'} benchmark on{' '}
+              <Link href="/benchmarks" className="text-primary-600 hover:underline">mailair.company/benchmarks</Link>. Never shown individually.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={handleBenchmarkToggle}
+            disabled={benchmarkSaving}
+            className={clsx(
+              'relative h-6 w-11 flex-shrink-0 rounded-full transition-colors disabled:opacity-50',
+              benchmarkOptIn ? 'bg-primary-600' : 'bg-gray-300 dark:bg-gray-600'
+            )}
+          >
+            <span
+              className={clsx(
+                'absolute top-0.5 h-5 w-5 rounded-full bg-white transition-transform',
+                benchmarkOptIn ? 'translate-x-5' : 'translate-x-0.5'
+              )}
+            />
+          </button>
+        </div>
+      </div>
+
+      <div className="card p-6">
+        <div className="flex items-center gap-2 mb-1">
+          <Puzzle className="h-4 w-4 text-primary-600" />
+          <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100">Browser Extension</h3>
+        </div>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+          Draft and send AI replies from Gmail or LinkedIn, and see a live priority panel in Gmail. Load the extension, then paste in these two values.
+        </p>
+        <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/40 p-3.5 space-y-3">
+          <div>
+            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">API URL</p>
+            <code className="block text-xs text-gray-700 dark:text-gray-300 font-mono">
+              {process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}
+            </code>
+          </div>
+          <div>
+            <div className="flex items-center justify-between gap-3 mb-1">
+              <p className="text-xs font-medium text-gray-500 dark:text-gray-400">API Token</p>
+              <button type="button" onClick={copyExtensionToken} className="inline-flex items-center gap-1.5 text-xs font-medium text-primary-600 hover:text-primary-700">
+                <Copy className="h-3.5 w-3.5" /> Copy token
+              </button>
+            </div>
+            <p className="text-xs text-gray-400 dark:text-gray-500">
+              Copies your current session token. It expires after about an hour — come back here and copy a fresh one if the extension stops working.
+            </p>
+          </div>
+        </div>
       </div>
 
       <div className="flex justify-end">

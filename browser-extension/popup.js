@@ -49,7 +49,7 @@ function showComposer() {
 
 // ─── Auth ─────────────────────────────────────────────────────────────────────
 $('save-token').addEventListener('click', () => {
-  apiUrl = ($('api-url').value || 'https://mailair.company').replace(/\/$/, '');
+  apiUrl = ($('api-url').value || 'https://inboxiq-sby6.onrender.com').replace(/\/$/, '');
   apiToken = $('api-token').value.trim();
   if (!apiToken) return alert('Token required');
   chrome.storage.local.set({ mailair_url: apiUrl, mailair_token: apiToken }, showComposer);
