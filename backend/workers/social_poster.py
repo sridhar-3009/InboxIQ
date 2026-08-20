@@ -20,7 +20,7 @@ async def post_daily_social():
 
     post = get_todays_post()
     try:
-        result = await post_content(post["caption"], post["headline"], post["subtext"])
-        logger.info("Daily social post published (theme=%s): %s", post["theme"], result.get("image_url"))
+        result = await post_content(post["caption"], post["slides"])
+        logger.info("Daily social post published (theme=%s, slides=%d): %s", post["theme"], len(post["slides"]), result.get("image_urls"))
     except Exception as exc:
         logger.error("Daily social post failed (theme=%s): %s", post["theme"], exc)

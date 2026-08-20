@@ -14,7 +14,7 @@ import httpx
 
 from config import settings
 from database import get_supabase
-from services.social_image import generate_post_image
+from services.social_image import generate_slide_image
 
 logger = logging.getLogger(__name__)
 
@@ -47,8 +47,8 @@ def _build_platforms() -> list[dict]:
     return platforms
 
 
-async def publish_post(caption: str, image_url: str, publish_now: bool = True) -> dict:
-    """Publish a post with an image to every configured platform."""
+async def publish_post(caption: str, image_urls: list[str], publish_now: bool = True) -> dict:
+    """Publish a post (single image, or a carousel of up to 10) to every configured platform."""
     if not settings.ZERNIO_API_KEY:
         raise RuntimeError("ZERNIO_API_KEY is not configured.")
 
@@ -58,7 +58,7 @@ async def publish_post(caption: str, image_url: str, publish_now: bool = True) -
 
     body = {
         "content": caption,
-        "mediaItems": [{"type": "image", "url": image_url}],
+        "mediaItems": [{"type": "image", "url": url} for url in image_urls[:10]],
         "platforms": platforms,
         "publishNow": publish_now,
     }
@@ -73,10 +73,14 @@ async def publish_post(caption: str, image_url: str, publish_now: bool = True) -
         return resp.json()
 
 
-async def post_content(caption: str, headline: str, subtext: str) -> dict:
-    """Full pipeline: render image, upload it, publish to Zernio."""
-    image_bytes = generate_post_image(headline, subtext)
-    image_url = upload_post_image(image_bytes)
-    result = await publish_post(caption, image_url)
-    logger.info("Zernio post published: %s", result.get("id") or result)
-    return {"image_url": image_url, "zernio_response": result}
+async def post_content(caption: str, slides: list[dict]) -> dict:
+    """Full pipeline: render every slide, upload each, publish as one post
+    (a single image, or a carousel if there's more than one slide)."""
+    image_urls = []
+    for slide in slides:
+        image_bytes = generate_slide_image(slide)
+        image_urls.append(upload_post_image(image_bytes))
+
+    result = await publish_post(caption, image_urls)
+    logger.info("Zernio post published (%d slide(s)): %s", len(image_urls), result.get("id") or result)
+    return {"image_urls": image_urls, "zernio_response": result}

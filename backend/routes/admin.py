@@ -50,16 +50,19 @@ class PlanUpdateBody(BaseModel):
 
 @router.get("/social/preview")
 async def preview_social_post(_: Annotated[dict, Depends(require_admin)]):
-    """Preview today's rotation content and rendered image — does not post."""
+    """Preview today's rotation content and rendered slide(s) — does not post."""
     from services.social_content import get_todays_post
-    from services.social_image import generate_post_image
+    from services.social_image import generate_slide_image
     import base64
 
     post = get_todays_post()
-    image_bytes = generate_post_image(post["headline"], post["subtext"])
+    slide_images = [
+        f"data:image/png;base64,{base64.b64encode(generate_slide_image(slide)).decode()}"
+        for slide in post["slides"]
+    ]
     return {
         **post,
-        "image_base64": f"data:image/png;base64,{base64.b64encode(image_bytes).decode()}",
+        "slide_images": slide_images,
         "autopost_enabled": settings.SOCIAL_AUTOPOST_ENABLED,
         "platforms_configured": bool(settings.ZERNIO_INSTAGRAM_ACCOUNT_ID or settings.ZERNIO_LINKEDIN_ACCOUNT_ID),
     }
@@ -74,7 +77,7 @@ async def trigger_social_post(_: Annotated[dict, Depends(require_admin)]):
 
     post = get_todays_post()
     try:
-        result = await post_content(post["caption"], post["headline"], post["subtext"])
+        result = await post_content(post["caption"], post["slides"])
     except Exception as exc:
         raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail=f"Zernio post failed: {exc}")
     return {**post, **result}
