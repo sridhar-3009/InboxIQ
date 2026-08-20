@@ -42,9 +42,9 @@ export default function SnoozedPage() {
       <Layout title="Snoozed">
         <div className="max-w-4xl mx-auto space-y-4">
           <div className="flex items-center gap-2">
-            <AlarmClock className="h-5 w-5 text-blue-600" />
+            <AlarmClock className="h-5 w-5 text-primary-600" />
             <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Snoozed Emails</h1>
-            <span className="rounded-full bg-blue-50 dark:bg-blue-900/30 px-2.5 py-0.5 text-xs font-medium text-blue-700 dark:text-blue-300">
+            <span className="rounded-full bg-primary-50 dark:bg-primary-900/30 px-2.5 py-0.5 text-xs font-medium text-primary-700 dark:text-primary-300">
               {list.length}
             </span>
           </div>

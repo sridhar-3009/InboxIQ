@@ -45,49 +45,49 @@ export default function SupportPage() {
         <meta name="description" content="Get help with Mailair. Browse FAQs or contact our support team." />
       </Head>
 
-      <nav style={{ borderBottom: '1px solid #e5e7eb', padding: '0 24px', height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#fff' }}>
+      <nav style={{ borderBottom: '1px solid #e7e0d4', padding: '10px 16px', minHeight: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#fff', flexWrap: 'wrap', rowGap: 8 }}>
         <Link href="/"><img src="/logo.svg" alt="Mailair" style={{ height: 36 }} /></Link>
-        <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
-          <Link href="/docs" style={{ color: '#6b7280', fontSize: 14, textDecoration: 'none' }}>Docs</Link>
-          <Link href="/auth/signin" style={{ color: '#6b7280', fontSize: 14, textDecoration: 'none' }}>Sign In</Link>
+        <div className="gap-3 sm:gap-6" style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
+          <Link href="/docs" style={{ color: '#83745e', fontSize: 14, textDecoration: 'none' }}>Docs</Link>
+          <Link href="/auth/signin" style={{ color: '#83745e', fontSize: 14, textDecoration: 'none' }}>Sign In</Link>
         </div>
       </nav>
 
       <div style={{ maxWidth: 860, margin: '0 auto', padding: '60px 24px' }}>
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 64 }}>
-          <h1 style={{ fontSize: 40, fontWeight: 800, color: '#111827', margin: '0 0 12px' }}>How can we help?</h1>
-          <p style={{ color: '#6b7280', fontSize: 18 }}>Browse common questions or reach out directly.</p>
+          <h1 style={{ fontSize: 40, fontWeight: 800, color: '#221c16', margin: '0 0 12px' }}>How can we help?</h1>
+          <p style={{ color: '#83745e', fontSize: 18 }}>Browse common questions or reach out directly.</p>
         </div>
 
         {/* Contact cards */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 20, marginBottom: 64 }}>
           {[
-            { icon: Mail, title: 'Email Support', desc: 'Typically reply within 24 hours', cta: 'Send Email', href: 'mailto:saisridhart@gmail.com', color: '#2563eb', bg: '#eff6ff' },
-            { icon: FileText, title: 'Documentation', desc: 'Guides for every feature', cta: 'Browse Docs', href: '/docs', color: '#7c3aed', bg: '#f5f3ff' },
+            { icon: Mail, title: 'Email Support', desc: 'Typically reply within 24 hours', cta: 'Send Email', href: 'mailto:saisridhart@gmail.com', color: '#b04723', bg: '#fdf3ee' },
+            { icon: FileText, title: 'Documentation', desc: 'Guides for every feature', cta: 'Browse Docs', href: '/docs', color: '#5c6a3d', bg: '#f4f5ee' },
             { icon: Zap, title: 'Changelog', desc: 'See what\'s new in Mailair', cta: 'View Updates', href: '/changelog', color: '#d97706', bg: '#fffbeb' },
           ].map(({ icon: Icon, title, desc, cta, href, color, bg }) => (
             <div key={title} style={{ background: bg, border: `1px solid ${color}22`, borderRadius: 16, padding: 24, textAlign: 'center' }}>
               <div style={{ width: 48, height: 48, borderRadius: 12, background: `${color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
                 <Icon size={22} color={color} />
               </div>
-              <h3 style={{ fontSize: 16, fontWeight: 700, color: '#111827', margin: '0 0 6px' }}>{title}</h3>
-              <p style={{ fontSize: 13, color: '#6b7280', margin: '0 0 16px' }}>{desc}</p>
+              <h3 style={{ fontSize: 16, fontWeight: 700, color: '#221c16', margin: '0 0 6px' }}>{title}</h3>
+              <p style={{ fontSize: 13, color: '#83745e', margin: '0 0 16px' }}>{desc}</p>
               <a href={href} style={{ fontSize: 13, fontWeight: 600, color, textDecoration: 'none', borderBottom: `1.5px solid ${color}` }}>{cta} →</a>
             </div>
           ))}
         </div>
 
         {/* FAQ */}
-        <h2 style={{ fontSize: 28, fontWeight: 800, color: '#111827', marginBottom: 32 }}>Frequently Asked Questions</h2>
+        <h2 style={{ fontSize: 28, fontWeight: 800, color: '#221c16', marginBottom: 32 }}>Frequently Asked Questions</h2>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           {faqs.map((faq, i) => (
-            <details key={i} style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: 12, padding: '0', overflow: 'hidden' }}>
-              <summary style={{ padding: '18px 20px', fontWeight: 600, fontSize: 15, color: '#111827', cursor: 'pointer', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <details key={i} style={{ background: '#fff', border: '1px solid #e7e0d4', borderRadius: 12, padding: '0', overflow: 'hidden' }}>
+              <summary style={{ padding: '18px 20px', fontWeight: 600, fontSize: 15, color: '#221c16', cursor: 'pointer', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 {faq.q}
-                <span style={{ fontSize: 20, color: '#9ca3af', flexShrink: 0, marginLeft: 12 }}>+</span>
+                <span style={{ fontSize: 20, color: '#a99b83', flexShrink: 0, marginLeft: 12 }}>+</span>
               </summary>
-              <div style={{ padding: '0 20px 18px', fontSize: 14, color: '#374151', lineHeight: 1.7, borderTop: '1px solid #f3f4f6' }}>
+              <div style={{ padding: '0 20px 18px', fontSize: 14, color: '#4a4033', lineHeight: 1.7, borderTop: '1px solid #f3efe8' }}>
                 <p style={{ margin: '12px 0 0' }}>{faq.a}</p>
               </div>
             </details>
@@ -95,11 +95,11 @@ export default function SupportPage() {
         </div>
 
         {/* Still need help */}
-        <div style={{ marginTop: 64, textAlign: 'center', background: '#f9fafb', borderRadius: 20, padding: '48px 24px', border: '1px solid #e5e7eb' }}>
-          <MessageSquare size={32} color="#9ca3af" style={{ margin: '0 auto 16px' }} />
-          <h3 style={{ fontSize: 22, fontWeight: 700, color: '#111827', margin: '0 0 8px' }}>Still need help?</h3>
-          <p style={{ color: '#6b7280', margin: '0 0 24px' }}>Can&apos;t find your answer above? Drop us an email and we&apos;ll get back to you.</p>
-          <a href="mailto:saisridhart@gmail.com" style={{ background: '#2563eb', color: '#fff', padding: '12px 32px', borderRadius: 10, fontSize: 15, fontWeight: 700, textDecoration: 'none' }}>
+        <div style={{ marginTop: 64, textAlign: 'center', background: '#faf8f5', borderRadius: 20, padding: '48px 24px', border: '1px solid #e7e0d4' }}>
+          <MessageSquare size={32} color="#a99b83" style={{ margin: '0 auto 16px' }} />
+          <h3 style={{ fontSize: 22, fontWeight: 700, color: '#221c16', margin: '0 0 8px' }}>Still need help?</h3>
+          <p style={{ color: '#83745e', margin: '0 0 24px' }}>Can&apos;t find your answer above? Drop us an email and we&apos;ll get back to you.</p>
+          <a href="mailto:saisridhart@gmail.com" style={{ background: '#b04723', color: '#fff', padding: '12px 32px', borderRadius: 10, fontSize: 15, fontWeight: 700, textDecoration: 'none' }}>
             Email saisridhart@gmail.com
           </a>
         </div>

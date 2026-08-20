@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 188 56" fill="none" role="img" aria-label="Mailair">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="56" y2="56" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#1e40af"/>
-      <stop offset="1" stop-color="#1e3a8a"/>
+      <stop stop-color="#e17c4e"/>
+      <stop offset="1" stop-color="#b04723"/>
     </linearGradient>
   </defs>
 
@@ -15,10 +15,10 @@
 
   <!-- ── Wordmark (dark background) ── -->
   <text x="69" y="38"
-    font-family="-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif"
-    font-size="28"
-    font-weight="800"
-    letter-spacing="-1">
-    <tspan fill="white">Mail</tspan><tspan fill="#60a5fa">air</tspan>
+    font-family="'Fraunces', Georgia, serif"
+    font-size="27"
+    font-weight="600"
+    letter-spacing="-0.5">
+    <tspan fill="#faf3ec">Mail</tspan><tspan fill="#eda078">air</tspan>
   </text>
 </svg>

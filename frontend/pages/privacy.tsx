@@ -8,11 +8,11 @@ export default function PrivacyPolicy() {
         <title>Privacy Policy — Mailair</title>
       </Head>
       <div style={{ background: '#fff', minHeight: '100vh' }}>
-        <nav style={{ borderBottom: '1px solid #e5e7eb', padding: '0 24px', height: 56, display: 'flex', alignItems: 'center', background: '#fff' }}>
+        <nav style={{ borderBottom: '1px solid #e7e0d4', padding: '0 24px', height: 56, display: 'flex', alignItems: 'center', background: '#fff' }}>
           <Link href="/"><img src="/logo.svg" alt="Mailair" style={{ height: 32 }} /></Link>
         </nav>
-      <div style={{ maxWidth: 760, margin: '60px auto', padding: '0 24px', fontFamily: 'ui-sans-serif, system-ui, sans-serif', lineHeight: 1.8, color: '#1a1a1a' }}>
-        <Link href="/" style={{ color: '#2563eb', textDecoration: 'none', fontSize: 14 }}>← Back to Mailair</Link>
+      <div style={{ maxWidth: 760, margin: '60px auto', padding: '0 24px', fontFamily: "'Work Sans', ui-sans-serif, system-ui, sans-serif", lineHeight: 1.8, color: '#221c16' }}>
+        <Link href="/" style={{ color: '#b04723', textDecoration: 'none', fontSize: 14 }}>← Back to Mailair</Link>
 
         <h1 style={{ marginTop: 32, fontSize: 32, fontWeight: 700 }}>Privacy Policy</h1>
         <p style={{ color: '#666', fontSize: 14 }}>Last updated: March 15, 2026</p>
@@ -55,7 +55,7 @@ export default function PrivacyPolicy() {
         </ul>
         <p>
           Mailair's use and transfer of information received from Google APIs adheres to the{' '}
-          <a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank" rel="noopener noreferrer" style={{ color: '#6366f1' }}>
+          <a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank" rel="noopener noreferrer" style={{ color: '#b04723' }}>
             Google API Services User Data Policy
           </a>
           , including the Limited Use requirements.
@@ -111,8 +111,8 @@ export default function PrivacyPolicy() {
           <strong>tarrasridhar1154@gmail.com</strong>
         </p>
 
-        <hr style={{ margin: '48px 0', borderColor: '#e5e7eb' }} />
-        <p style={{ color: '#999', fontSize: 13, textAlign: 'center' }}>© 2025 Mailair. All rights reserved.</p>
+        <hr style={{ margin: '48px 0', borderColor: '#e7e0d4' }} />
+        <p style={{ color: '#a99b83', fontSize: 13, textAlign: 'center' }}>© 2026 Mailair. All rights reserved.</p>
       </div>
       </div>
     </>

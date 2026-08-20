@@ -17,7 +17,7 @@ import type { Organization, OrgMember, ActivityLogEntry } from '@/lib/types';
 
 const ROLE_CONFIG = {
   owner: { label: 'Owner', icon: Crown, classes: 'text-amber-700 bg-amber-50 dark:bg-amber-900/20 dark:text-amber-400 border-amber-200 dark:border-amber-700' },
-  admin: { label: 'Admin', icon: Shield, classes: 'text-blue-700 bg-blue-50 dark:bg-blue-900/20 dark:text-blue-400 border-blue-200 dark:border-blue-700' },
+  admin: { label: 'Admin', icon: Shield, classes: 'text-primary-700 bg-primary-50 dark:bg-primary-900/20 dark:text-primary-400 border-primary-200 dark:border-primary-700' },
   member: { label: 'Member', icon: User, classes: 'text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600' },
 };
 

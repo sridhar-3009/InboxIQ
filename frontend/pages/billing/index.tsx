@@ -72,7 +72,7 @@ const PLANS: Plan[] = [
 
 const statusConfig: Record<string, { label: string; classes: string }> = {
   active: { label: 'Active', classes: 'bg-green-50 text-green-700 border border-green-200' },
-  trialing: { label: 'Trial', classes: 'bg-blue-50 text-blue-700 border border-blue-200' },
+  trialing: { label: 'Trial', classes: 'bg-primary-50 text-primary-700 border border-primary-200' },
   past_due: { label: 'Past Due', classes: 'bg-red-50 text-red-700 border border-red-200' },
   canceled: { label: 'Canceled', classes: 'bg-gray-100 text-gray-600 border border-gray-200' },
   none: { label: 'Free', classes: 'bg-gray-100 text-gray-600 border border-gray-200' },

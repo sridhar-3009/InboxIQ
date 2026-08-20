@@ -14,7 +14,7 @@ import type { Quote } from '@/lib/types';
 
 const STATUS_STYLES: Record<string, string> = {
   draft:    'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300',
-  sent:     'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
+  sent:     'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300',
   accepted: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300',
   rejected: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300',
 };

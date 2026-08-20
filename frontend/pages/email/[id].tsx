@@ -83,7 +83,7 @@ function getFileColor(mimeType: string): string {
   if (mimeType.startsWith('image/'))   return 'text-pink-500 bg-pink-50';
   if (mimeType.includes('pdf'))        return 'text-red-500 bg-red-50';
   if (mimeType.includes('spreadsheet') || mimeType.includes('excel')) return 'text-green-600 bg-green-50';
-  if (mimeType.includes('word') || mimeType.includes('document')) return 'text-blue-500 bg-blue-50';
+  if (mimeType.includes('word') || mimeType.includes('document')) return 'text-primary-600 bg-primary-50';
   return 'text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700';
 }
 
@@ -105,13 +105,13 @@ function EmailBodyFrame({ html }: { html: string }) {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     font-size: 14px;
     line-height: 1.65;
-    color: #1f2937;
+    color: #332b22;
     word-break: break-word;
     overflow-wrap: anywhere;
     padding: 20px 24px 28px;
   }
   * { box-sizing: border-box; }
-  a { color: #2563eb; text-decoration: none; }
+  a { color: #b04723; text-decoration: none; }
   a:hover { text-decoration: underline; }
   img { max-width: 100% !important; height: auto !important; display: inline-block; }
   table { max-width: 100% !important; border-collapse: collapse; }
@@ -120,23 +120,23 @@ function EmailBodyFrame({ html }: { html: string }) {
   blockquote {
     margin: 12px 0;
     padding: 8px 16px;
-    border-left: 3px solid #d1d5db;
-    color: #6b7280;
-    background: #f9fafb;
+    border-left: 3px solid #d3c7b4;
+    color: #83745e;
+    background: #faf8f5;
     border-radius: 0 6px 6px 0;
   }
   pre, code {
     font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
     font-size: 13px;
-    background: #f3f4f6;
+    background: #f3efe8;
     border-radius: 4px;
     padding: 2px 5px;
   }
   pre { padding: 12px 16px; overflow-x: auto; }
-  hr { border: none; border-top: 1px solid #e5e7eb; margin: 16px 0; }
+  hr { border: none; border-top: 1px solid #e7e0d4; margin: 16px 0; }
   /* Gmail quote collapse */
-  .gmail_quote, .gmail_extra { color: #6b7280; }
-  div[style*="color:#888"], div[style*="color: #888"] { color: #9ca3af !important; }
+  .gmail_quote, .gmail_extra { color: #83745e; }
+  div[style*="color:#888"], div[style*="color: #888"] { color: #a99b83 !important; }
 </style>
 </head>
 <body>${html}</body>
@@ -771,7 +771,7 @@ export default function EmailDetailPage() {
                 className="btn-secondary shrink-0"
                 title="Re-process with AI"
               >
-                {isReprocessing ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4 text-blue-500" />}
+                {isReprocessing ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4 text-primary-600" />}
                 <span className="hidden sm:inline">{isReprocessing ? 'Processing…' : 'Reprocess'}</span>
               </button>
 
@@ -823,7 +823,7 @@ export default function EmailDetailPage() {
                 disabled={isTogglingFollowUp}
                 className={clsx(
                   'btn-secondary text-sm',
-                  (email.labels ?? []).includes('__followup__') && 'bg-violet-50 border-violet-300 text-violet-700 dark:bg-violet-900/20 dark:border-violet-700 dark:text-violet-300'
+                  (email.labels ?? []).includes('__followup__') && 'bg-olive-50 border-olive-400 text-olive-600 dark:bg-olive-600/20 dark:border-olive-600 dark:text-olive-400'
                 )}
                 title="Mark as waiting for reply"
               >
@@ -841,7 +841,7 @@ export default function EmailDetailPage() {
                 className="btn-secondary text-sm"
                 title="Snooze"
               >
-                <AlarmClock className="h-4 w-4 text-blue-500" />
+                <AlarmClock className="h-4 w-4 text-primary-500" />
                 <span className="hidden sm:inline">Snooze</span>
               </button>
 
@@ -854,7 +854,7 @@ export default function EmailDetailPage() {
               >
                 {loadingThreadSummary
                   ? <Loader2 className="h-4 w-4 animate-spin" />
-                  : <Layers className="h-4 w-4 text-blue-500" />}
+                  : <Layers className="h-4 w-4 text-primary-500" />}
                 <span className="hidden sm:inline">Summary</span>
               </button>
 
@@ -865,7 +865,7 @@ export default function EmailDetailPage() {
                   className="btn-secondary text-sm"
                   title="View full thread"
                 >
-                  <Layers className="h-4 w-4 text-violet-500" />
+                  <Layers className="h-4 w-4 text-olive-500" />
                   <span className="hidden sm:inline">Thread</span>
                 </button>
               )}
@@ -896,10 +896,10 @@ export default function EmailDetailPage() {
               {/* Ask AI */}
               <button
                 onClick={() => setAskAIOpen((v) => !v)}
-                className={clsx('btn-secondary text-sm', askAIOpen && 'bg-violet-50 border-violet-300 text-violet-700 dark:bg-violet-900/20 dark:border-violet-700 dark:text-violet-300')}
+                className={clsx('btn-secondary text-sm', askAIOpen && 'bg-olive-50 border-olive-400 text-olive-600 dark:bg-olive-600/20 dark:border-olive-600 dark:text-olive-400')}
                 title="Ask AI about this email"
               >
-                <Brain className="h-4 w-4 text-violet-500" />
+                <Brain className="h-4 w-4 text-olive-500" />
                 <span className="hidden sm:inline">Ask AI</span>
               </button>
 
@@ -916,10 +916,10 @@ export default function EmailDetailPage() {
 
           {/* Ask AI panel */}
           {askAIOpen && (
-            <div className="card p-4 border border-violet-200 dark:border-violet-700 bg-violet-50/50 dark:bg-violet-900/10 animate-slide-up">
+            <div className="card p-4 border border-olive-100 dark:border-olive-600 bg-olive-50/50 dark:bg-olive-600/10 animate-slide-up">
               <div className="flex items-center gap-2 mb-3">
-                <Brain className="h-4 w-4 text-violet-600 dark:text-violet-400" />
-                <h3 className="text-sm font-semibold text-violet-900 dark:text-violet-100">Ask AI about this email</h3>
+                <Brain className="h-4 w-4 text-olive-600 dark:text-olive-400" />
+                <h3 className="text-sm font-semibold text-olive-600 dark:text-olive-100">Ask AI about this email</h3>
               </div>
               <div className="flex gap-2">
                 <input
@@ -940,8 +940,8 @@ export default function EmailDetailPage() {
                 </button>
               </div>
               {askAIAnswer && (
-                <div className="mt-3 rounded-lg bg-white dark:bg-gray-800 border border-violet-200 dark:border-violet-700 p-3">
-                  <p className="text-xs font-medium text-violet-600 dark:text-violet-400 mb-1.5">AI Answer</p>
+                <div className="mt-3 rounded-lg bg-white dark:bg-gray-800 border border-olive-100 dark:border-olive-600 p-3">
+                  <p className="text-xs font-medium text-olive-600 dark:text-olive-400 mb-1.5">AI Answer</p>
                   <p className="text-sm text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed">{askAIAnswer}</p>
                   <div className="mt-2 flex gap-2">
                     <button
@@ -1143,28 +1143,28 @@ export default function EmailDetailPage() {
 
             {/* Thread Summary Card */}
             {threadSummary && threadSummary.status === 'summarized' && (
-              <div className="mt-4 rounded-lg border border-blue-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/20 px-4 py-3">
+              <div className="mt-4 rounded-lg border border-primary-200 dark:border-primary-700 bg-primary-50 dark:bg-primary-900/20 px-4 py-3">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-start gap-2 min-w-0 flex-1">
-                    <Layers className="h-4 w-4 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+                    <Layers className="h-4 w-4 text-primary-600 dark:text-primary-400 flex-shrink-0 mt-0.5" />
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-semibold text-blue-800 dark:text-blue-300">
+                      <p className="text-sm font-semibold text-primary-800 dark:text-primary-300">
                         Thread Summary ({threadSummary.thread_length} emails)
                       </p>
-                      <p className="mt-1 text-xs text-blue-700 dark:text-blue-400 leading-relaxed">
+                      <p className="mt-1 text-xs text-primary-700 dark:text-primary-400 leading-relaxed">
                         {threadSummary.summary}
                       </p>
                       {threadSummary.key_points.length > 0 && (
                         <ul className="mt-2 space-y-0.5">
                           {threadSummary.key_points.map((pt, i) => (
-                            <li key={i} className="text-xs text-blue-700 dark:text-blue-400 flex items-start gap-1.5">
+                            <li key={i} className="text-xs text-primary-700 dark:text-primary-400 flex items-start gap-1.5">
                               <span className="flex-shrink-0 mt-0.5">•</span>{pt}
                             </li>
                           ))}
                         </ul>
                       )}
                       {threadSummary.next_action && (
-                        <p className="mt-2 text-xs font-medium text-blue-800 dark:text-blue-300">
+                        <p className="mt-2 text-xs font-medium text-primary-800 dark:text-primary-300">
                           Next: {threadSummary.next_action}
                         </p>
                       )}
@@ -1172,7 +1172,7 @@ export default function EmailDetailPage() {
                   </div>
                   <button
                     onClick={() => setThreadSummary(null)}
-                    className="flex-shrink-0 p-1 rounded text-blue-500 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-800/40 transition-colors"
+                    className="flex-shrink-0 p-1 rounded text-primary-500 hover:text-primary-700 dark:hover:text-primary-300 hover:bg-primary-100 dark:hover:bg-primary-800/40 transition-colors"
                   >
                     <X className="h-3.5 w-3.5" />
                   </button>
@@ -1542,7 +1542,7 @@ export default function EmailDetailPage() {
           {/* Reply Editor */}
           <div className="animate-slide-up stagger-4">
             <div className="flex items-center gap-2 mb-3">
-              <MessageSquare className="h-4 w-4 text-blue-600" />
+              <MessageSquare className="h-4 w-4 text-primary-600" />
               <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100">AI Reply Draft</h2>
             </div>
             <ReplyEditor

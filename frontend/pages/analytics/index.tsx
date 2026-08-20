@@ -36,8 +36,8 @@ type SenderInsight = {
 };
 
 const SENDER_GRADIENTS = [
-  'from-blue-400 to-blue-600',
-  'from-blue-400 to-blue-600',
+  'from-primary-400 to-primary-600',
+  'from-primary-400 to-primary-600',
   'from-emerald-400 to-emerald-600',
   'from-rose-400 to-rose-600',
   'from-amber-400 to-amber-600',
@@ -53,10 +53,10 @@ function senderGradient(name: string) {
 const CATEGORY_COLORS: Record<string, string> = {
   urgent:         '#ef4444',
   needs_response: '#f59e0b',
-  follow_up:      '#3b82f6',
+  follow_up:      '#cf5d2e',
   fyi:            '#8b5cf6',
   newsletter:     '#10b981',
-  spam:           '#6b7280',
+  spam:           '#83745e',
   other:          '#94a3b8',
 };
 
@@ -383,7 +383,7 @@ export default function AnalyticsPage() {
           {(loading || responseTime) && (
             <div className="card p-5 animate-slide-up">
               <div className="flex items-center gap-2 mb-5">
-                <TrendingUp className="h-4 w-4 text-blue-600" />
+                <TrendingUp className="h-4 w-4 text-primary-600" />
                 <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-100">Response Time Analytics</h2>
                 {responseTime && (
                   <span className="ml-auto text-xs text-gray-500 dark:text-gray-400">
@@ -407,7 +407,7 @@ export default function AnalyticsPage() {
                         </div>
                         <div className="h-2 w-full rounded-full bg-gray-100 dark:bg-gray-700 overflow-hidden">
                           <div
-                            className="h-full rounded-full bg-blue-500 transition-all duration-700"
+                            className="h-full rounded-full bg-primary-500 transition-all duration-700"
                             style={{ width: `${Math.min((hours / (responseTime.overall_avg_hours * 2 || 1)) * 100, 100)}%` }}
                           />
                         </div>

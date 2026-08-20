@@ -200,8 +200,8 @@ function OutlookIntegration() {
     <div className="card p-6">
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-start gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50">
-            <Mail className="h-5 w-5 text-blue-500 dark:text-blue-400" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-50">
+            <Mail className="h-5 w-5 text-primary-500 dark:text-primary-400" />
           </div>
           <div>
             <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100">Outlook / Microsoft 365</h3>
@@ -1248,7 +1248,7 @@ function NotificationsTab({
             </p>
             <div className="mt-2 flex flex-wrap gap-2">
               {['AI advancements', 'New LLM releases', 'Business AI tools', 'Industry trends'].map((tag) => (
-                <span key={tag} className="inline-flex items-center rounded-full bg-blue-50 dark:bg-blue-900/20 px-2.5 py-0.5 text-xs font-medium text-blue-700 dark:text-blue-300 border border-blue-100 dark:border-blue-700">
+                <span key={tag} className="inline-flex items-center rounded-full bg-primary-50 dark:bg-primary-900/20 px-2.5 py-0.5 text-xs font-medium text-primary-700 dark:text-primary-300 border border-primary-100 dark:border-primary-700">
                   {tag}
                 </span>
               ))}
@@ -1645,8 +1645,8 @@ function DataTab() {
     <div className="space-y-6 max-w-2xl">
       <div className="card p-6">
         <div className="flex items-start gap-3 mb-4">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-900/20">
-            <Download className="h-5 w-5 text-blue-500 dark:text-blue-400" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-50 dark:bg-primary-900/20">
+            <Download className="h-5 w-5 text-primary-500 dark:text-primary-400" />
           </div>
           <div>
             <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100">Export My Data</h3>
@@ -1658,7 +1658,7 @@ function DataTab() {
         <button
           onClick={handleExport}
           disabled={exporting}
-          className="inline-flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 px-4 py-2 text-sm font-medium text-white transition-colors disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-xl bg-primary-600 hover:bg-primary-700 px-4 py-2 text-sm font-medium text-white transition-colors disabled:opacity-50"
         >
           {exporting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
           {exporting ? 'Exporting...' : 'Download My Data'}
@@ -1731,7 +1731,7 @@ export default function SettingsPage() {
       <Layout title="Settings">
         <div className="max-w-4xl mx-auto">
           {/* Tab nav */}
-          <div className="flex gap-1 mb-6 bg-gray-100 dark:bg-gray-800 rounded-xl p-1 w-fit">
+          <div className="flex gap-1 mb-6 bg-gray-100 dark:bg-gray-800 rounded-xl p-1 w-full sm:w-fit overflow-x-auto scrollbar-hide">
             {tabs.map((tab) => {
               const { icon: Icon } = tab;
               return (
@@ -1739,7 +1739,7 @@ export default function SettingsPage() {
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={clsx(
-                    'flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all',
+                    'flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all flex-shrink-0',
                     activeTab === tab.id
                       ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm'
                       : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'

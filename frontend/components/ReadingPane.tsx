@@ -141,7 +141,7 @@ export default function ReadingPane({ emailId, onClose, onMutate }: ReadingPaneP
               </span>
             )}
             {(email.labels ?? []).includes('__followup__') && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-violet-50 dark:bg-violet-900/20 px-2 py-0.5 text-xs font-medium text-violet-600 dark:text-violet-400 border border-violet-200 dark:border-violet-700">
+              <span className="inline-flex items-center gap-1 rounded-full bg-olive-50 dark:bg-olive-600/20 px-2 py-0.5 text-xs font-medium text-olive-600 dark:text-olive-400 border border-olive-100 dark:border-olive-600/40">
                 <Clock className="h-3 w-3" />Waiting
               </span>
             )}

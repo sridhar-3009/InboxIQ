@@ -2,16 +2,16 @@ import Head from 'next/head';
 import Link from 'next/link';
 
 const s = {
-  wrap: { maxWidth: 760, margin: '60px auto', padding: '0 24px', fontFamily: 'ui-sans-serif, system-ui, sans-serif', lineHeight: 1.8, color: '#1a1a1a' } as React.CSSProperties,
-  back: { color: '#2563eb', textDecoration: 'none', fontSize: 14 } as React.CSSProperties,
+  wrap: { maxWidth: 760, margin: '60px auto', padding: '0 24px', fontFamily: "'Work Sans', ui-sans-serif, system-ui, sans-serif", lineHeight: 1.8, color: '#221c16' } as React.CSSProperties,
+  back: { color: '#b04723', textDecoration: 'none', fontSize: 14 } as React.CSSProperties,
   h1: { marginTop: 32, fontSize: 32, fontWeight: 700 } as React.CSSProperties,
-  h2: { marginTop: 32, fontSize: 20, fontWeight: 700, borderBottom: '1px solid #e5e7eb', paddingBottom: 8 } as React.CSSProperties,
-  meta: { color: '#6b7280', fontSize: 14 } as React.CSSProperties,
-  p: { color: '#374151', marginTop: 12 } as React.CSSProperties,
-  li: { color: '#374151', marginBottom: 6 } as React.CSSProperties,
-  table: { width: '100%', borderCollapse: 'collapse' as const, marginTop: 16, fontSize: 14 },
-  th: { textAlign: 'left' as const, padding: '10px 12px', background: '#f9fafb', border: '1px solid #e5e7eb', fontWeight: 600, color: '#374151' },
-  td: { padding: '10px 12px', border: '1px solid #e5e7eb', color: '#374151' },
+  h2: { marginTop: 32, fontSize: 20, fontWeight: 700, borderBottom: '1px solid #e7e0d4', paddingBottom: 8 } as React.CSSProperties,
+  meta: { color: '#83745e', fontSize: 14 } as React.CSSProperties,
+  p: { color: '#4a4033', marginTop: 12 } as React.CSSProperties,
+  li: { color: '#4a4033', marginBottom: 6 } as React.CSSProperties,
+  table: { width: '100%', minWidth: 560, borderCollapse: 'collapse' as const, marginTop: 16, fontSize: 14 },
+  th: { textAlign: 'left' as const, padding: '10px 12px', background: '#faf8f5', border: '1px solid #e7e0d4', fontWeight: 600, color: '#4a4033' },
+  td: { padding: '10px 12px', border: '1px solid #e7e0d4', color: '#4a4033' },
 };
 
 export default function CookiePolicy() {
@@ -19,7 +19,7 @@ export default function CookiePolicy() {
     <>
       <Head><title>Cookie Policy — Mailair</title></Head>
       <div style={{ background: '#fff', minHeight: '100vh' }}>
-        <nav style={{ borderBottom: '1px solid #e5e7eb', padding: '0 24px', height: 56, display: 'flex', alignItems: 'center', background: '#fff' }}>
+        <nav style={{ borderBottom: '1px solid #e7e0d4', padding: '0 24px', height: 56, display: 'flex', alignItems: 'center', background: '#fff' }}>
           <Link href="/"><img src="/logo.svg" alt="Mailair" style={{ height: 32 }} /></Link>
         </nav>
       <div style={s.wrap}>
@@ -31,6 +31,7 @@ export default function CookiePolicy() {
         <p style={s.p}>Cookies are small text files stored on your device when you visit a website. They help websites remember your preferences and improve your experience. Mailair uses a minimal set of cookies strictly necessary to operate the service.</p>
 
         <h2 style={s.h2}>2. Cookies We Use</h2>
+        <div style={{ overflowX: 'auto' }}>
         <table style={s.table}>
           <thead>
             <tr>
@@ -56,6 +57,7 @@ export default function CookiePolicy() {
             ))}
           </tbody>
         </table>
+        </div>
 
         <h2 style={s.h2}>3. What We Do NOT Use</h2>
         <ul>
@@ -74,9 +76,9 @@ export default function CookiePolicy() {
         </ul>
 
         <h2 style={s.h2}>5. Contact</h2>
-        <p style={s.p}>Questions about our cookie use? Email us at <a href="mailto:saisridhart@gmail.com" style={{ color: '#2563eb' }}>saisridhart@gmail.com</a></p>
+        <p style={s.p}>Questions about our cookie use? Email us at <a href="mailto:saisridhart@gmail.com" style={{ color: '#b04723' }}>saisridhart@gmail.com</a></p>
 
-        <p style={{ ...s.meta, marginTop: 48, borderTop: '1px solid #e5e7eb', paddingTop: 24, textAlign: 'center' }}>© 2025 Mailair. All rights reserved.</p>
+        <p style={{ ...s.meta, marginTop: 48, borderTop: '1px solid #e7e0d4', paddingTop: 24, textAlign: 'center' }}>© 2026 Mailair. All rights reserved.</p>
       </div>
       </div>
     </>

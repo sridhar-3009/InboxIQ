@@ -14,14 +14,14 @@ import type { RelationshipContact } from '@/lib/types';
 
 const HEALTH_COLORS = {
   excellent: 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-700',
-  good: 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700',
+  good: 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 border-primary-200 dark:border-primary-700',
   fair: 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-700',
   at_risk: 'text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-700',
 };
 
 const HEALTH_BAR = {
   excellent: 'bg-emerald-500',
-  good: 'bg-blue-500',
+  good: 'bg-primary-500',
   fair: 'bg-amber-500',
   at_risk: 'bg-red-500',
 };

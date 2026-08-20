@@ -7,7 +7,7 @@ export default function Document() {
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@300;400;500;600;700;800&display=swap"
           rel="stylesheet"
         />
         <link rel="icon" href="/favicon.ico" sizes="any" />
@@ -16,7 +16,7 @@ export default function Document() {
 
         {/* PWA manifest */}
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#2563eb" />
+        <meta name="theme-color" content="#b04723" />
 
         {/* iOS PWA — makes "Add to Home Screen" work like a native app */}
         <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -30,7 +30,7 @@ export default function Document() {
         <meta name="application-name" content="Mailair" />
 
         {/* Splash screen colors */}
-        <meta name="msapplication-TileColor" content="#0f172a" />
+        <meta name="msapplication-TileColor" content="#221c16" />
         <meta name="msapplication-TileImage" content="/icon-192.png" />
 
         <meta name="description" content="Mailair — AI-powered email management. Prioritise, summarise and reply intelligently." />

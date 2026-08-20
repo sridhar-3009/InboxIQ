@@ -2,13 +2,13 @@ import Head from 'next/head';
 import Link from 'next/link';
 
 const s = {
-  wrap: { maxWidth: 760, margin: '60px auto', padding: '0 24px', fontFamily: 'ui-sans-serif, system-ui, sans-serif', lineHeight: 1.8, color: '#1a1a1a' } as React.CSSProperties,
-  back: { color: '#2563eb', textDecoration: 'none', fontSize: 14 } as React.CSSProperties,
+  wrap: { maxWidth: 760, margin: '60px auto', padding: '0 24px', fontFamily: "'Work Sans', ui-sans-serif, system-ui, sans-serif", lineHeight: 1.8, color: '#221c16' } as React.CSSProperties,
+  back: { color: '#b04723', textDecoration: 'none', fontSize: 14 } as React.CSSProperties,
   h1: { marginTop: 32, fontSize: 32, fontWeight: 700 } as React.CSSProperties,
-  h2: { marginTop: 32, fontSize: 20, fontWeight: 700, borderBottom: '1px solid #e5e7eb', paddingBottom: 8 } as React.CSSProperties,
-  meta: { color: '#6b7280', fontSize: 14 } as React.CSSProperties,
-  p: { color: '#374151', marginTop: 12 } as React.CSSProperties,
-  li: { color: '#374151', marginBottom: 6 } as React.CSSProperties,
+  h2: { marginTop: 32, fontSize: 20, fontWeight: 700, borderBottom: '1px solid #e7e0d4', paddingBottom: 8 } as React.CSSProperties,
+  meta: { color: '#83745e', fontSize: 14 } as React.CSSProperties,
+  p: { color: '#4a4033', marginTop: 12 } as React.CSSProperties,
+  li: { color: '#4a4033', marginBottom: 6 } as React.CSSProperties,
 };
 
 export default function TermsOfService() {
@@ -16,7 +16,7 @@ export default function TermsOfService() {
     <>
       <Head><title>Terms of Service — Mailair</title></Head>
       <div style={{ background: '#fff', minHeight: '100vh' }}>
-        <nav style={{ borderBottom: '1px solid #e5e7eb', padding: '0 24px', height: 56, display: 'flex', alignItems: 'center', background: '#fff' }}>
+        <nav style={{ borderBottom: '1px solid #e7e0d4', padding: '0 24px', height: 56, display: 'flex', alignItems: 'center', background: '#fff' }}>
           <Link href="/"><img src="/logo.svg" alt="Mailair" style={{ height: 32 }} /></Link>
         </nav>
       <div style={s.wrap}>
@@ -81,9 +81,9 @@ export default function TermsOfService() {
         <p style={s.p}>We may update these Terms from time to time. We will notify you of significant changes via email or an in-app notice. Continued use of the Service after changes constitutes acceptance.</p>
 
         <h2 style={s.h2}>12. Contact</h2>
-        <p style={s.p}>For questions about these Terms, contact us at: <a href="mailto:saisridhart@gmail.com" style={{ color: '#2563eb' }}>saisridhart@gmail.com</a></p>
+        <p style={s.p}>For questions about these Terms, contact us at: <a href="mailto:saisridhart@gmail.com" style={{ color: '#b04723' }}>saisridhart@gmail.com</a></p>
 
-        <p style={{ ...s.meta, marginTop: 48, borderTop: '1px solid #e5e7eb', paddingTop: 24, textAlign: 'center' }}>© 2025 Mailair. All rights reserved.</p>
+        <p style={{ ...s.meta, marginTop: 48, borderTop: '1px solid #e7e0d4', paddingTop: 24, textAlign: 'center' }}>© 2026 Mailair. All rights reserved.</p>
       </div>
       </div>
     </>

@@ -312,13 +312,13 @@ export default function ReplyEditor({ emailId, draft, suggestedReply, senderName
 
         {/* Tone check result */}
         {toneResult && (
-          <div className="rounded-lg border border-violet-200 dark:border-violet-700 bg-violet-50 dark:bg-violet-900/10 px-3 py-2.5">
+          <div className="rounded-lg border border-olive-100 dark:border-olive-600/40 bg-olive-50 dark:bg-olive-600/10 px-3 py-2.5">
             <div className="flex items-start justify-between gap-2">
               <div className="flex items-start gap-2 min-w-0">
-                <Brain className="h-3.5 w-3.5 text-violet-600 dark:text-violet-400 mt-0.5 flex-shrink-0" />
-                <p className="text-xs text-violet-800 dark:text-violet-200 leading-relaxed">{toneResult}</p>
+                <Brain className="h-3.5 w-3.5 text-olive-600 dark:text-olive-400 mt-0.5 flex-shrink-0" />
+                <p className="text-xs text-olive-600 dark:text-olive-200 leading-relaxed">{toneResult}</p>
               </div>
-              <button onClick={() => setToneResult(null)} className="flex-shrink-0 text-violet-400 hover:text-violet-600 dark:hover:text-violet-300">
+              <button onClick={() => setToneResult(null)} className="flex-shrink-0 text-olive-400 hover:text-olive-600 dark:hover:text-olive-300">
                 <X className="h-3.5 w-3.5" />
               </button>
             </div>
@@ -333,7 +333,7 @@ export default function ReplyEditor({ emailId, draft, suggestedReply, senderName
             disabled={toneLoading || !content.trim()}
             className={clsx(
               'btn-secondary text-sm gap-1.5',
-              toneResult && 'border-violet-300 bg-violet-50 text-violet-700 dark:border-violet-700 dark:bg-violet-900/20 dark:text-violet-400'
+              toneResult && 'border-olive-400 bg-olive-50 text-olive-600 dark:border-olive-600 dark:bg-olive-600/20 dark:text-olive-400'
             )}
             title="Check tone with AI"
           >

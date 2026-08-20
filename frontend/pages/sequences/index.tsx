@@ -143,7 +143,7 @@ export default function SequencesPage() {
                         </button>
                       )}
                     </div>
-                    <div className="grid grid-cols-3 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       <div>
                         <label className="text-xs text-gray-400">Send after (days)</label>
                         <input type="number" value={step.delay_days} onChange={e => updateStep(i, 'delay_days', Number(e.target.value))} className="input mt-1 w-full text-sm" />

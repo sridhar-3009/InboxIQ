@@ -29,8 +29,8 @@ import toast from 'react-hot-toast';
 // ─── Constants ───────────────────────────────────────────────────────────────
 
 const SENDER_GRADIENTS = [
-  'from-blue-400 to-blue-600',
-  'from-blue-400 to-blue-600',
+  'from-primary-400 to-primary-600',
+  'from-primary-400 to-primary-600',
   'from-emerald-400 to-emerald-600',
   'from-rose-400 to-rose-600',
   'from-amber-400 to-amber-600',
@@ -51,7 +51,7 @@ const CATEGORY_CONFIG: Record<string, { label: string; classes: string }> = {
   },
   needs_response: {
     label: 'Needs Response',
-    classes: 'bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800',
+    classes: 'bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400 border border-primary-200 dark:border-primary-800',
   },
   follow_up: {
     label: 'Follow Up',
@@ -71,7 +71,7 @@ const CATEGORY_CONFIG: Record<string, { label: string; classes: string }> = {
   },
   other: {
     label: 'Other',
-    classes: 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600',
+    classes: 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-600',
   },
 };
 
@@ -260,7 +260,7 @@ function ContactDrawer({
           ) : detail ? (
             <div className="p-5 space-y-5">
               {/* Stats row */}
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-3 gap-2 sm:gap-3">
                 {[
                   { label: 'Emails', value: detail.total_emails, icon: Mail },
                   { label: 'Replied', value: `${repliedPct}%`, icon: MessageSquare },
@@ -390,9 +390,9 @@ interface PipelineCard {
 }
 
 const PIPELINE_STAGES: { id: PipelineStage; label: string; color: string; bg: string }[] = [
-  { id: 'new_lead',  label: 'New Lead',       color: 'text-blue-700 dark:text-blue-300',   bg: 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700' },
+  { id: 'new_lead',  label: 'New Lead',       color: 'text-primary-700 dark:text-primary-300',   bg: 'bg-primary-50 dark:bg-primary-900/20 border-primary-200 dark:border-primary-700' },
   { id: 'contacted', label: 'Contacted',      color: 'text-amber-700 dark:text-amber-300', bg: 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-700' },
-  { id: 'proposal',  label: 'Proposal Sent',  color: 'text-blue-700 dark:text-blue-300', bg: 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700' },
+  { id: 'proposal',  label: 'Proposal Sent',  color: 'text-primary-700 dark:text-primary-300', bg: 'bg-primary-50 dark:bg-primary-900/20 border-primary-200 dark:border-primary-700' },
   { id: 'won',       label: 'Won',            color: 'text-emerald-700 dark:text-emerald-300', bg: 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-700' },
   { id: 'lost',      label: 'Lost',           color: 'text-gray-600 dark:text-gray-400',   bg: 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700' },
 ];

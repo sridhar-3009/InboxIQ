@@ -30,17 +30,18 @@ export default function App({ Component, pageProps }: AppProps) {
           duration: 4000,
           style: {
             background: '#fff',
-            color: '#111827',
-            boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1)',
+            color: '#221c16',
+            border: '1px solid #e7e0d4',
+            boxShadow: '0 12px 32px -8px rgba(94,42,26,0.16), 0 4px 12px -4px rgba(94,42,26,0.08)',
             borderRadius: '0.75rem',
             fontSize: '0.875rem',
-            fontFamily: 'Inter, sans-serif',
+            fontFamily: "'Work Sans', sans-serif",
           },
           success: {
-            iconTheme: { primary: '#10b981', secondary: '#fff' },
+            iconTheme: { primary: '#5c7a4a', secondary: '#fff' },
           },
           error: {
-            iconTheme: { primary: '#ef4444', secondary: '#fff' },
+            iconTheme: { primary: '#b5432f', secondary: '#fff' },
           },
         }}
         />

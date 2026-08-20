@@ -162,8 +162,8 @@ export default function Layout({ children, title }: LayoutProps) {
   const SMART_FOLDERS = [
     { label: 'Urgent',      href: '/email?category=urgent',         icon: AlertTriangle,  color: 'text-red-500',    dot: 'bg-red-500',    key: 'urgent' },
     { label: 'Needs Reply', href: '/email?category=needs_response', icon: MessageSquare,  color: 'text-amber-500',  dot: 'bg-amber-400',  key: 'needs_response' },
-    { label: 'Follow Up',   href: '/email?category=follow_up',      icon: RefreshCw,      color: 'text-blue-500',   dot: 'bg-blue-400',   key: 'follow_up' },
-    { label: 'Waiting',     href: '/email?labels=__followup__',     icon: Clock,          color: 'text-violet-500', dot: 'bg-violet-400', key: '__followup__' },
+    { label: 'Follow Up',   href: '/email?category=follow_up',      icon: RefreshCw,      color: 'text-warning',    dot: 'bg-warning',   key: 'follow_up' },
+    { label: 'Waiting',     href: '/email?labels=__followup__',     icon: Clock,          color: 'text-olive-500',  dot: 'bg-olive-400',  key: '__followup__' },
     { label: 'Newsletters', href: '/email/newsletters',             icon: Newspaper,      color: 'text-emerald-500',dot: 'bg-emerald-400',key: 'newsletter' },
   ];
 

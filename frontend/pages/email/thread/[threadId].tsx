@@ -18,10 +18,10 @@ import { emailsApi } from '@/lib/api';
 import type { Email } from '@/lib/types';
 
 const AVATAR_GRADIENTS = [
-  'from-blue-400 to-blue-600', 'from-emerald-400 to-emerald-600',
+  'from-primary-400 to-primary-600', 'from-emerald-400 to-emerald-600',
   'from-rose-400 to-rose-600', 'from-amber-400 to-amber-600',
   'from-cyan-400 to-cyan-600', 'from-fuchsia-400 to-fuchsia-600',
-  'from-teal-400 to-teal-600', 'from-violet-400 to-violet-600',
+  'from-teal-400 to-teal-600', 'from-olive-400 to-olive-600',
 ];
 function gradient(name: string) {
   return AVATAR_GRADIENTS[(name.charCodeAt(0) || 0) % AVATAR_GRADIENTS.length];
@@ -113,7 +113,7 @@ function ThreadEmail({ email, index, defaultOpen }: { email: Email; index: numbe
             {analysis?.priority_level && <PriorityBadge level={analysis.priority_level} size="sm" />}
             {email.is_starred && <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-600 border border-amber-200"><Star className="h-3 w-3 fill-amber-400" />Starred</span>}
             {(email.labels ?? []).includes('__followup__') && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-violet-50 dark:bg-violet-900/20 px-2 py-0.5 text-xs font-medium text-violet-600 dark:text-violet-400 border border-violet-200 dark:border-violet-700">
+              <span className="inline-flex items-center gap-1 rounded-full bg-olive-50 dark:bg-olive-600/20 px-2 py-0.5 text-xs font-medium text-olive-600 dark:text-olive-400 border border-olive-100 dark:border-olive-600">
                 <Clock className="h-3 w-3" />Waiting
               </span>
             )}

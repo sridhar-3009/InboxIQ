@@ -17,13 +17,13 @@ declare global {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-xs font-medium text-slate-400 mb-1">{label}</label>
+      <label className="block text-xs font-medium text-gray-500 mb-1">{label}</label>
       {children}
     </div>
   );
 }
 
-const inputCls = "w-full bg-slate-800 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition-colors";
+const inputCls = "w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary-500 transition-colors";
 
 const FIELD_LABELS: Record<string, string> = {
   name: 'Full Name', email: 'Email', phone: 'Phone',
@@ -86,7 +86,7 @@ export default function CheckoutPage() {
         description: `Order #${orderRes.order_id?.slice(0, 8).toUpperCase()}`,
         order_id: orderRes.razorpay_order_id,
         prefill: { name: orderRes.customer_name, email: orderRes.customer_email, contact: orderRes.customer_phone },
-        theme: { color: '#2563eb' },
+        theme: { color: '#b04723' },
         handler: async (response: { razorpay_payment_id: string; razorpay_order_id: string; razorpay_signature: string }) => {
           try {
             await shopApi.verifyPayment({
@@ -119,12 +119,12 @@ export default function CheckoutPage() {
     return (
       <ShopLayout title="Checkout">
         <div className="flex flex-col items-center justify-center py-32 text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-800 border border-white/10 mb-4">
-            <ShoppingBag className="h-7 w-7 text-slate-500" />
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 border border-gray-200 mb-4">
+            <ShoppingBag className="h-7 w-7 text-gray-500" />
           </div>
-          <p className="text-white font-semibold text-lg mb-1">Your cart is empty</p>
-          <p className="text-slate-500 text-sm mb-6">Add some Mailair goodies before checking out.</p>
-          <Link href="/shop" className="bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-xl px-6 py-3 transition-colors text-sm">
+          <p className="text-gray-900 font-semibold text-lg mb-1">Your cart is empty</p>
+          <p className="text-gray-500 text-sm mb-6">Add some Mailair goodies before checking out.</p>
+          <Link href="/shop" className="bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-xl px-6 py-3 transition-colors text-sm">
             Browse Shop
           </Link>
         </div>
@@ -135,12 +135,12 @@ export default function CheckoutPage() {
   return (
     <ShopLayout title="Checkout">
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-2xl font-extrabold text-white mb-8">Checkout</h1>
+        <h1 className="font-serif text-2xl text-gray-900 mb-8">Checkout</h1>
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
           {/* Form */}
           <div className="lg:col-span-3 space-y-5">
-            <div className="bg-slate-900 border border-white/5 rounded-2xl p-5 space-y-4">
-              <h2 className="text-sm font-semibold text-slate-300">Shipping Details</h2>
+            <div className="bg-white border border-gray-200 shadow-warm rounded-2xl p-5 space-y-4">
+              <h2 className="text-sm font-semibold text-gray-700">Shipping Details</h2>
               <div className="grid grid-cols-2 gap-3">
                 <Field label="Full Name">
                   <input value={form.name} onChange={set('name')} placeholder="Ravi Kumar" className={inputCls} />
@@ -158,7 +158,7 @@ export default function CheckoutPage() {
               <Field label="Address Line 2 (optional)">
                 <input value={form.line2} onChange={set('line2')} placeholder="Apartment, suite, etc." className={inputCls} />
               </Field>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <Field label="City">
                   <input value={form.city} onChange={set('city')} placeholder="Bengaluru" className={inputCls} />
                 </Field>
@@ -177,27 +177,27 @@ export default function CheckoutPage() {
 
           {/* Summary */}
           <div className="lg:col-span-2 space-y-4">
-            <div className="bg-slate-900 border border-white/5 rounded-2xl p-5 space-y-3 sticky top-24">
-              <h2 className="text-sm font-semibold text-slate-300">Order Summary</h2>
+            <div className="bg-white border border-gray-200 shadow-warm rounded-2xl p-5 space-y-3 sticky top-24">
+              <h2 className="text-sm font-semibold text-gray-700">Order Summary</h2>
               <div className="space-y-2 max-h-48 overflow-y-auto">
                 {items.map((item, i) => (
-                  <div key={i} className="flex justify-between text-xs text-slate-400">
+                  <div key={i} className="flex justify-between text-xs text-gray-500">
                     <span className="truncate pr-2">{item.product_name}{item.variant ? ` (${item.variant})` : ''} ×{item.quantity}</span>
-                    <span className="flex-shrink-0 text-white">₹{(item.unit_price * item.quantity / 100).toLocaleString('en-IN')}</span>
+                    <span className="flex-shrink-0 text-gray-900">₹{(item.unit_price * item.quantity / 100).toLocaleString('en-IN')}</span>
                   </div>
                 ))}
               </div>
-              <div className="border-t border-white/5 pt-3 flex justify-between">
-                <span className="font-semibold text-white text-sm">Total</span>
-                <span className="text-lg font-bold text-blue-400">₹{(totalPaise / 100).toLocaleString('en-IN')}</span>
+              <div className="border-t border-gray-200 pt-3 flex justify-between">
+                <span className="font-semibold text-gray-900 text-sm">Total</span>
+                <span className="text-lg font-bold text-primary-700">₹{(totalPaise / 100).toLocaleString('en-IN')}</span>
               </div>
               <button
                 onClick={handleCheckout}
                 disabled={loading}
-                className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold rounded-xl py-3 transition-colors">
+                className="w-full flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold rounded-xl py-3 transition-colors">
                 {loading ? <><Loader2 className="h-4 w-4 animate-spin" />Processing…</> : <><Lock className="h-4 w-4" />Pay Securely</>}
               </button>
-              <p className="text-xs text-slate-600 text-center">Powered by Razorpay. 100% secure.</p>
+              <p className="text-xs text-gray-400 text-center">Powered by Razorpay. 100% secure.</p>
             </div>
           </div>
         </div>

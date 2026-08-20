@@ -79,7 +79,7 @@ function StatCard({
 
 const PLAN_BADGE: Record<string, string> = {
   free:   'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300',
-  pro:    'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
+  pro:    'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300',
   agency: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300',
 };
 
@@ -261,7 +261,7 @@ export default function AdminPage() {
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 <StatCard icon={Users}       label="Total Users"     value={stats.total_users}           color="bg-primary-600" sub={`${stats.new_users_this_month} new this month`} />
                 <StatCard icon={UserCheck}   label="Paying Users"    value={stats.paying_users}          color="bg-emerald-600" sub={`${stats.pro_users} Pro · ${stats.agency_users} Agency`} />
-                <StatCard icon={IndianRupee} label="MRR"             value={`₹${stats.mrr_inr.toLocaleString()}`} color="bg-blue-600" sub="Monthly recurring revenue" />
+                <StatCard icon={IndianRupee} label="MRR"             value={`₹${stats.mrr_inr.toLocaleString()}`} color="bg-primary-600" sub="Monthly recurring revenue" />
                 <StatCard icon={Mail}        label="Emails Processed" value={stats.total_processed_emails} color="bg-purple-600" sub={`${stats.emails_this_month} this month`} />
               </div>
 
@@ -269,7 +269,7 @@ export default function AdminPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {[
                   { plan: 'free',   count: stats.free_users,   color: 'bg-gray-400',    pct: stats.total_users ? Math.round((stats.free_users / stats.total_users) * 100) : 0 },
-                  { plan: 'pro',    count: stats.pro_users,    color: 'bg-blue-500',    pct: stats.total_users ? Math.round((stats.pro_users / stats.total_users) * 100) : 0 },
+                  { plan: 'pro',    count: stats.pro_users,    color: 'bg-primary-500',    pct: stats.total_users ? Math.round((stats.pro_users / stats.total_users) * 100) : 0 },
                   { plan: 'agency', count: stats.agency_users, color: 'bg-purple-500',  pct: stats.total_users ? Math.round((stats.agency_users / stats.total_users) * 100) : 0 },
                 ].map(({ plan, count, color, pct }) => (
                   <div key={plan} className="card p-5">

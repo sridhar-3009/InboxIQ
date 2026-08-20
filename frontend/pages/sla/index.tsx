@@ -103,7 +103,7 @@ export default function SLAPage() {
 
           {/* Stats */}
           {status && (
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="card p-5">
                 <p className="text-sm text-gray-500">Breached</p>
                 <p className="text-3xl font-bold text-red-600 dark:text-red-400 mt-1">{status.breached.length}</p>

@@ -63,26 +63,26 @@ export default function SigninPage() {
                   variables: {
                     default: {
                       colors: {
-                        brand: '#2563eb',
-                        brandAccent: '#1d4ed8',
+                        brand: '#b04723',
+                        brandAccent: '#8e381d',
                         brandButtonText: '#ffffff',
-                        inputBorder: '#e5e7eb',
-                        inputBorderFocus: '#2563eb',
-                        inputBorderHover: '#d1d5db',
-                        inputLabelText: '#374151',
-                        inputText: '#111827',
-                        inputPlaceholder: '#9ca3af',
+                        inputBorder: '#e7e0d4',
+                        inputBorderFocus: '#b04723',
+                        inputBorderHover: '#d3c7b4',
+                        inputLabelText: '#4a4033',
+                        inputText: '#221c16',
+                        inputPlaceholder: '#a99b83',
                         inputBackground: '#ffffff',
                         defaultButtonBackground: '#ffffff',
-                        defaultButtonBackgroundHover: '#f9fafb',
-                        defaultButtonBorder: '#e5e7eb',
-                        defaultButtonText: '#374151',
-                        anchorTextColor: '#2563eb',
-                        anchorTextHoverColor: '#1d4ed8',
-                        dividerBackground: '#e5e7eb',
-                        messageText: '#374151',
-                        messageBackground: '#f9fafb',
-                        messageBorder: '#e5e7eb',
+                        defaultButtonBackgroundHover: '#faf8f5',
+                        defaultButtonBorder: '#e7e0d4',
+                        defaultButtonText: '#4a4033',
+                        anchorTextColor: '#b04723',
+                        anchorTextHoverColor: '#8e381d',
+                        dividerBackground: '#e7e0d4',
+                        messageText: '#4a4033',
+                        messageBackground: '#faf8f5',
+                        messageBorder: '#e7e0d4',
                       },
                       radii: {
                         borderRadiusButton: '0.75rem',
@@ -95,10 +95,10 @@ export default function SigninPage() {
                         baseLabelSize: '0.875rem',
                       },
                       fonts: {
-                        bodyFontFamily: `'Inter', ui-sans-serif, system-ui, sans-serif`,
-                        buttonFontFamily: `'Inter', ui-sans-serif, system-ui, sans-serif`,
-                        inputFontFamily: `'Inter', ui-sans-serif, system-ui, sans-serif`,
-                        labelFontFamily: `'Inter', ui-sans-serif, system-ui, sans-serif`,
+                        bodyFontFamily: `'Work Sans', ui-sans-serif, system-ui, sans-serif`,
+                        buttonFontFamily: `'Work Sans', ui-sans-serif, system-ui, sans-serif`,
+                        inputFontFamily: `'Work Sans', ui-sans-serif, system-ui, sans-serif`,
+                        labelFontFamily: `'Work Sans', ui-sans-serif, system-ui, sans-serif`,
                       },
                       space: {
                         inputPadding: '0.75rem 1rem',
@@ -108,17 +108,17 @@ export default function SigninPage() {
                   },
                   style: {
                     container: { background: 'transparent' },
-                    message: { color: '#374151', background: '#fefce8', border: '1px solid #fef08a', borderRadius: '0.5rem' },
-                    divider: { background: '#e5e7eb' },
-                    label: { color: '#374151', fontWeight: '500' },
+                    message: { color: '#4a4033', background: '#fefce8', border: '1px solid #fef08a', borderRadius: '0.5rem' },
+                    divider: { background: '#e7e0d4' },
+                    label: { color: '#4a4033', fontWeight: '500' },
                     input: {
-                      color: '#111827',
+                      color: '#221c16',
                       background: '#ffffff',
-                      border: '1.5px solid #e5e7eb',
+                      border: '1.5px solid #e7e0d4',
                       boxShadow: 'none',
                     },
                     button: { fontWeight: '600' },
-                    anchor: { color: '#2563eb', fontWeight: '500' },
+                    anchor: { color: '#b04723', fontWeight: '500' },
                   },
                   className: {
                     button: 'font-semibold shadow-sm',
@@ -156,11 +156,11 @@ export default function SigninPage() {
                 <Zap className="h-10 w-10 text-white" />
               </div>
             </div>
-            <h2 className="text-3xl font-bold text-white mb-4">
-              Your inbox, managed by AI
+            <h2 className="font-serif text-3xl text-white mb-4">
+              Welcome back to a sorted inbox
             </h2>
-            <p className="text-primary-200 text-base leading-relaxed">
-              Sign in to access your priority inbox, action items, and AI-powered insights — all in one place.
+            <p className="text-primary-100 text-base leading-relaxed">
+              Your priority list, action items, and drafts are exactly where you left them.
             </p>
           </div>
         </div>

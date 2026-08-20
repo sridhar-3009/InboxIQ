@@ -29,8 +29,8 @@ interface EmailCardProps {
 }
 
 const AVATAR_GRADIENTS = [
-  'from-blue-400 to-blue-600',
-  'from-blue-400 to-blue-600',
+  'from-primary-400 to-primary-600',
+  'from-primary-400 to-primary-600',
   'from-emerald-400 to-emerald-600',
   'from-rose-400 to-rose-600',
   'from-amber-400 to-amber-600',
@@ -204,7 +204,7 @@ export default function EmailCard({
                   <p className="text-xs text-gray-400 dark:text-gray-500 truncate">{email.from_email}</p>
                 )}
                 {recurringCount >= 3 && (
-                  <p className="text-xs text-blue-600 dark:text-blue-400 flex items-center gap-1">
+                  <p className="text-xs text-primary-600 dark:text-primary-400 flex items-center gap-1">
                     <RefreshCw className="h-3 w-3" />
                     {recurringCount} emails in last 30 days
                   </p>
@@ -232,7 +232,7 @@ export default function EmailCard({
                   {senderName}
                 </span>
                 {recurringCount >= 3 && (
-                  <span className="inline-flex items-center gap-0.5 rounded-full bg-blue-50 dark:bg-blue-900/20 px-1.5 py-0.5 text-[10px] font-medium text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-700">
+                  <span className="inline-flex items-center gap-0.5 rounded-full bg-primary-50 dark:bg-primary-900/20 px-1.5 py-0.5 text-[10px] font-medium text-primary-600 dark:text-primary-400 border border-primary-200 dark:border-primary-700">
                     <RefreshCw className="h-2.5 w-2.5" />
                     {recurringCount >= 10 ? 'Frequent' : 'Regular'}
                   </span>
@@ -284,7 +284,7 @@ export default function EmailCard({
               {/* Snooze button */}
               <button
                 onClick={handleSnoozeClick}
-                className="opacity-0 group-hover:opacity-100 rounded p-0.5 text-gray-300 dark:text-gray-600 hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-150"
+                className="opacity-0 group-hover:opacity-100 rounded p-0.5 text-gray-300 dark:text-gray-600 hover:text-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-150"
                 title="Snooze"
               >
                 <AlarmClock className="h-3.5 w-3.5" />
@@ -336,13 +336,13 @@ export default function EmailCard({
                 </span>
               )}
               {isSnoozed && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-600 border border-blue-100">
+                <span className="inline-flex items-center gap-1 rounded-full bg-primary-50 px-2 py-0.5 text-xs font-medium text-primary-700 border border-primary-100">
                   <AlarmClock className="h-3 w-3" />
                   Snoozed
                 </span>
               )}
               {isWaitingReply && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-violet-50 dark:bg-violet-900/20 px-2 py-0.5 text-xs font-medium text-violet-600 dark:text-violet-400 border border-violet-200 dark:border-violet-700">
+                <span className="inline-flex items-center gap-1 rounded-full bg-olive-50 dark:bg-olive-600/20 px-2 py-0.5 text-xs font-medium text-olive-600 dark:text-olive-400 border border-olive-100 dark:border-olive-600/40">
                   <Clock className="h-3 w-3" />
                   Waiting
                 </span>

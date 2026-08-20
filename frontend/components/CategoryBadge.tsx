@@ -21,22 +21,22 @@ const categoryConfig: Record<
 > = {
   urgent: {
     label: 'Urgent',
-    classes: 'bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800',
+    classes: 'bg-urgent/10 dark:bg-urgent/20 text-urgent dark:text-red-300 border border-urgent/30 dark:border-urgent/40',
     Icon: AlertCircle,
   },
   needs_response: {
     label: 'Needs Response',
-    classes: 'bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800',
+    classes: 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 border border-primary-200 dark:border-primary-800',
     Icon: MessageSquare,
   },
   follow_up: {
     label: 'Follow Up',
-    classes: 'bg-amber-100 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800',
+    classes: 'bg-warning/10 dark:bg-warning/20 text-warning dark:text-amber-300 border border-warning/30 dark:border-warning/40',
     Icon: Clock,
   },
   fyi: {
     label: 'FYI',
-    classes: 'bg-purple-100 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400 border border-purple-200 dark:border-purple-800',
+    classes: 'bg-olive-50 dark:bg-olive-600/20 text-olive-600 dark:text-olive-400 border border-olive-100 dark:border-olive-600/40',
     Icon: Info,
   },
   newsletter: {
@@ -51,7 +51,7 @@ const categoryConfig: Record<
   },
   other: {
     label: 'Other',
-    classes: 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600',
+    classes: 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-600',
     Icon: Tag,
   },
 };

@@ -115,7 +115,7 @@ export default function SnoozeModal({ emailId, currentSnooze, onSnoozed, onClose
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-700">
           <div className="flex items-center gap-2">
-            <AlarmClock className="h-4 w-4 text-blue-600" />
+            <AlarmClock className="h-4 w-4 text-primary-600" />
             <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-100">Snooze email</h2>
           </div>
           <button
