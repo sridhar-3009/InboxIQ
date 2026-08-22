@@ -4,7 +4,8 @@ import { useRouter } from 'next/router';
 import { useSessionContext } from '@supabase/auth-helpers-react';
 import {
   FileText, Paperclip, MessageSquare, Settings as SettingsIcon,
-  Plus, Trash2, Download, Send, Loader2, Save, X,
+  Plus, Trash2, Download, Send, Loader2, Save, X, Search,
+  CheckCircle2, Circle,
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import toast from 'react-hot-toast';
@@ -31,7 +32,7 @@ function fmtSize(bytes: number): string {
 
 // ─── Docs ───────────────────────────────────────────────────────────────────
 
-function DocsTab() {
+function DocsTab({ query }: { query: string }) {
   const [docs, setDocs] = useState<TeamDoc[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeDoc, setActiveDoc] = useState<TeamDoc | null>(null);
@@ -39,6 +40,7 @@ function DocsTab() {
   const [content, setContent] = useState('');
   const [folder, setFolder] = useState('');
   const [saving, setSaving] = useState(false);
+  const [restoring, setRestoring] = useState(false);
 
   const load = async () => {
     try {
@@ -89,6 +91,23 @@ function DocsTab() {
     }
   };
 
+  const restore = async () => {
+    if (!activeDoc) return;
+    setRestoring(true);
+    try {
+      const updated = await workspaceApi.restoreDoc(activeDoc.id);
+      setActiveDoc(updated);
+      setTitle(updated.title);
+      setContent(updated.content || '');
+      await load();
+      toast.success('Restored previous version');
+    } catch (err) {
+      toast.error(apiErrorMessage(err, 'Nothing to restore'));
+    } finally {
+      setRestoring(false);
+    }
+  };
+
   const remove = async (id: string) => {
     try {
       await workspaceApi.deleteDoc(id);
@@ -129,9 +148,21 @@ function DocsTab() {
           placeholder="Start writing..."
           className="w-full p-4 bg-transparent text-sm text-gray-800 dark:text-gray-200 resize-none focus:outline-none leading-relaxed"
         />
+        {activeDoc.previous_content && (
+          <div className="flex items-center justify-between px-4 py-2.5 border-t border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/40">
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              Previous version saved {activeDoc.previous_saved_at ? formatDistanceToNow(new Date(activeDoc.previous_saved_at), { addSuffix: true }) : ''}
+            </p>
+            <button onClick={restore} disabled={restoring} className="text-xs font-medium text-primary-600 hover:text-primary-700">
+              {restoring ? 'Restoring…' : 'Restore previous version'}
+            </button>
+          </div>
+        )}
       </div>
     );
   }
+
+  const filteredDocs = docs.filter((d) => (d.title || '').toLowerCase().includes(query.toLowerCase()));
 
   return (
     <div>
@@ -141,14 +172,14 @@ function DocsTab() {
       </div>
       {loading ? (
         <div className="card p-12 flex items-center justify-center"><Loader2 className="h-6 w-6 animate-spin text-gray-400" /></div>
-      ) : docs.length === 0 ? (
+      ) : filteredDocs.length === 0 ? (
         <div className="card p-12 text-center text-gray-400">
           <FileText className="h-8 w-8 mx-auto mb-2 opacity-40" />
-          <p className="text-sm">No docs yet.</p>
+          <p className="text-sm">{query ? 'No docs match your search.' : 'No docs yet.'}</p>
         </div>
       ) : (
         Object.entries(
-          docs.reduce<Record<string, TeamDoc[]>>((acc, d) => {
+          filteredDocs.reduce<Record<string, TeamDoc[]>>((acc, d) => {
             const key = d.folder?.trim() || 'Unsorted';
             (acc[key] = acc[key] || []).push(d);
             return acc;
@@ -185,10 +216,11 @@ function isPreviewable(contentType: string | null): boolean {
   return !!contentType && (contentType.startsWith('image/') || contentType === 'application/pdf');
 }
 
-function FilesTab() {
+function FilesTab({ query }: { query: string }) {
   const [files, setFiles] = useState<TeamFile[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [uploadFolder, setUploadFolder] = useState('');
   const [preview, setPreview] = useState<{ url: string; filename: string; contentType: string | null } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -209,7 +241,7 @@ function FilesTab() {
     if (!file) return;
     setUploading(true);
     try {
-      await workspaceApi.uploadFile(file);
+      await workspaceApi.uploadFile(file, uploadFolder.trim() || undefined);
       await load();
       toast.success('Uploaded');
     } catch (err) {
@@ -248,45 +280,65 @@ function FilesTab() {
     }
   };
 
+  const filtered = files.filter((f) => f.filename.toLowerCase().includes(query.toLowerCase()));
+  const grouped = filtered.reduce<Record<string, TeamFile[]>>((acc, f) => {
+    const key = f.folder?.trim() || 'Unsorted';
+    (acc[key] = acc[key] || []).push(f);
+    return acc;
+  }, {});
+
   return (
     <div>
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
         <p className="text-sm text-gray-500 dark:text-gray-400">Shared with your whole team. 25MB per file.</p>
-        <label className="btn-primary text-sm cursor-pointer">
-          {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />} Upload
-          <input ref={fileInputRef} type="file" className="hidden" onChange={handleUpload} disabled={uploading} />
-        </label>
+        <div className="flex items-center gap-2">
+          <input
+            value={uploadFolder}
+            onChange={(e) => setUploadFolder(e.target.value)}
+            placeholder="Folder (optional)"
+            className="input-field h-9 w-40 text-sm"
+          />
+          <label className="btn-primary text-sm cursor-pointer">
+            {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />} Upload
+            <input ref={fileInputRef} type="file" className="hidden" onChange={handleUpload} disabled={uploading} />
+          </label>
+        </div>
       </div>
       {loading ? (
         <div className="card p-12 flex items-center justify-center"><Loader2 className="h-6 w-6 animate-spin text-gray-400" /></div>
-      ) : files.length === 0 ? (
+      ) : filtered.length === 0 ? (
         <div className="card p-12 text-center text-gray-400">
           <Paperclip className="h-8 w-8 mx-auto mb-2 opacity-40" />
-          <p className="text-sm">No files yet.</p>
+          <p className="text-sm">{query ? 'No files match your search.' : 'No files yet.'}</p>
         </div>
       ) : (
-        <div className="card divide-y divide-gray-100 dark:divide-gray-700">
-          {files.map((f) => (
-            <div key={f.id} className="flex items-center justify-between px-4 py-3 group">
-              <div
-                className={clsx('flex items-center gap-3 min-w-0', isPreviewable(f.content_type) && 'cursor-pointer')}
-                onClick={() => handleOpen(f)}
-              >
-                <Paperclip className="h-4 w-4 text-gray-400 flex-shrink-0" />
-                <div className="min-w-0">
-                  <p className="text-sm font-medium text-gray-800 dark:text-gray-200 truncate">{f.filename}</p>
-                  <p className="text-xs text-gray-400">{fmtSize(f.size_bytes)} &middot; {formatDistanceToNow(new Date(f.created_at), { addSuffix: true })}</p>
+        Object.entries(grouped).map(([folderName, folderFiles]) => (
+          <div key={folderName} className="mb-5">
+            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2 px-1">{folderName}</p>
+            <div className="card divide-y divide-gray-100 dark:divide-gray-700">
+              {folderFiles.map((f) => (
+                <div key={f.id} className="flex items-center justify-between px-4 py-3 group">
+                  <div
+                    className={clsx('flex items-center gap-3 min-w-0', isPreviewable(f.content_type) && 'cursor-pointer')}
+                    onClick={() => handleOpen(f)}
+                  >
+                    <Paperclip className="h-4 w-4 text-gray-400 flex-shrink-0" />
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-gray-800 dark:text-gray-200 truncate">{f.filename}</p>
+                      <p className="text-xs text-gray-400">{fmtSize(f.size_bytes)} &middot; {formatDistanceToNow(new Date(f.created_at), { addSuffix: true })}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <button onClick={() => handleDownload(f.id)} className="btn-icon"><Download className="h-4 w-4" /></button>
+                    <button onClick={() => remove(f.id)} className="opacity-0 group-hover:opacity-100 text-gray-300 hover:text-red-500 p-1.5">
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-center gap-2 flex-shrink-0">
-                <button onClick={() => handleDownload(f.id)} className="btn-icon"><Download className="h-4 w-4" /></button>
-                <button onClick={() => remove(f.id)} className="opacity-0 group-hover:opacity-100 text-gray-300 hover:text-red-500 p-1.5">
-                  <Trash2 className="h-3.5 w-3.5" />
-                </button>
-              </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </div>
+        ))
       )}
 
       {preview && (
@@ -495,12 +547,85 @@ function SettingsTab() {
   );
 }
 
+// ─── New-member onboarding checklist ───────────────────────────────────────
+// Shown for ~14 days after joining a team via invite (join_org flow sets
+// the localStorage marker). Purely a per-viewer nudge — no backend state.
+
+const CHECKLIST_ITEMS = [
+  { id: 'chat', label: 'Say hi in the team chat', tab: 'chat' as Tab },
+  { id: 'docs', label: 'Check the shared docs', tab: 'docs' as Tab },
+  { id: 'files', label: 'Browse the team files', tab: 'files' as Tab },
+];
+
+function NewMemberChecklist({ onNavigate }: { onNavigate: (tab: Tab) => void }) {
+  const [visible, setVisible] = useState(false);
+  const [done, setDone] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    try {
+      const marker = localStorage.getItem('mailair_new_member_joined_at');
+      if (!marker) return;
+      const joinedAt = parseInt(marker, 10);
+      const fourteenDays = 14 * 24 * 60 * 60 * 1000;
+      if (Date.now() - joinedAt < fourteenDays) {
+        setVisible(true);
+        const savedDone = JSON.parse(localStorage.getItem('mailair_onboarding_done') || '{}');
+        setDone(savedDone);
+      }
+    } catch { /* localStorage unavailable */ }
+  }, []);
+
+  if (!visible) return null;
+
+  const toggle = (id: string) => {
+    const next = { ...done, [id]: !done[id] };
+    setDone(next);
+    try { localStorage.setItem('mailair_onboarding_done', JSON.stringify(next)); } catch { /* ignore */ }
+  };
+
+  const dismiss = () => {
+    setVisible(false);
+    try { localStorage.removeItem('mailair_new_member_joined_at'); } catch { /* ignore */ }
+  };
+
+  const completedCount = CHECKLIST_ITEMS.filter((i) => done[i.id]).length;
+
+  return (
+    <div className="card p-5 mb-6 border-primary-200 dark:border-primary-800">
+      <div className="flex items-center justify-between mb-3">
+        <div>
+          <h3 className="font-serif text-lg text-gray-900 dark:text-gray-100">Welcome to the team</h3>
+          <p className="text-xs text-gray-500 dark:text-gray-400">{completedCount}/{CHECKLIST_ITEMS.length} done</p>
+        </div>
+        <button onClick={dismiss} className="text-gray-400 hover:text-gray-600"><X className="h-4 w-4" /></button>
+      </div>
+      <div className="space-y-2">
+        {CHECKLIST_ITEMS.map((item) => (
+          <button
+            key={item.id}
+            onClick={() => { toggle(item.id); onNavigate(item.tab); }}
+            className="w-full flex items-center gap-2.5 text-left rounded-lg px-2 py-1.5 hover:bg-gray-50 dark:hover:bg-gray-800"
+          >
+            {done[item.id] ? (
+              <CheckCircle2 className="h-4 w-4 text-success flex-shrink-0" />
+            ) : (
+              <Circle className="h-4 w-4 text-gray-300 dark:text-gray-600 flex-shrink-0" />
+            )}
+            <span className={clsx('text-sm', done[item.id] ? 'text-gray-400 line-through' : 'text-gray-700 dark:text-gray-300')}>{item.label}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ─── Page ───────────────────────────────────────────────────────────────────
 
 export default function WorkspacePage() {
   const router = useRouter();
   const { session, isLoading: sessionLoading } = useSessionContext();
   const [activeTab, setActiveTab] = useState<Tab>('docs');
+  const [query, setQuery] = useState('');
 
   useEffect(() => {
     if (!sessionLoading && !session) router.replace('/auth/signin');
@@ -513,29 +638,44 @@ export default function WorkspacePage() {
       <Head><title>Workspace — Mailair</title></Head>
       <Layout title="Workspace">
         <div className="max-w-4xl mx-auto">
-          <div className="flex gap-1 mb-6 bg-gray-100 dark:bg-gray-800 rounded-xl p-1 w-full sm:w-fit overflow-x-auto scrollbar-hide">
-            {tabs.map((tab) => {
-              const Icon = tab.icon;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={clsx(
-                    'flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all flex-shrink-0',
-                    activeTab === tab.id
-                      ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm'
-                      : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
-                  )}
-                >
-                  <Icon className="h-4 w-4" />
-                  {tab.label}
-                </button>
-              );
-            })}
+          <NewMemberChecklist onNavigate={setActiveTab} />
+
+          <div className="flex items-center justify-between gap-3 mb-6 flex-wrap">
+            <div className="flex gap-1 bg-gray-100 dark:bg-gray-800 rounded-xl p-1 w-full sm:w-fit overflow-x-auto scrollbar-hide">
+              {tabs.map((tab) => {
+                const Icon = tab.icon;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={clsx(
+                      'flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all flex-shrink-0',
+                      activeTab === tab.id
+                        ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm'
+                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
+                    )}
+                  >
+                    <Icon className="h-4 w-4" />
+                    {tab.label}
+                  </button>
+                );
+              })}
+            </div>
+            {(activeTab === 'docs' || activeTab === 'files') && (
+              <div className="relative w-full sm:w-56">
+                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400" />
+                <input
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder={`Search ${activeTab}...`}
+                  className="input-field h-9 pl-8 text-sm"
+                />
+              </div>
+            )}
           </div>
 
-          {activeTab === 'docs' && <DocsTab />}
-          {activeTab === 'files' && <FilesTab />}
+          {activeTab === 'docs' && <DocsTab query={query} />}
+          {activeTab === 'files' && <FilesTab query={query} />}
           {activeTab === 'chat' && <ChatTab />}
           {activeTab === 'settings' && <SettingsTab />}
         </div>

@@ -678,6 +678,9 @@ export interface TeamDoc {
   updated_by?: string;
   created_by?: string;
   created_at?: string;
+  previous_content?: string | null;
+  previous_title?: string | null;
+  previous_saved_at?: string | null;
 }
 
 export interface TeamFile {
@@ -688,6 +691,7 @@ export interface TeamFile {
   size_bytes: number;
   uploaded_by: string;
   created_at: string;
+  folder?: string | null;
 }
 
 export interface TeamChannel {

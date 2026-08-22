@@ -12,7 +12,7 @@ import logging
 from datetime import datetime, timezone
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, status
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, status
 from pydantic import BaseModel, Field
 
 import re
@@ -106,6 +106,18 @@ async def update_doc(doc_id: str, body: DocUpdate, current_user: Annotated[dict,
     user_id = _uid(current_user)
     org_id = _require_org(_get_user_org(user_id))
     supabase = get_supabase()
+
+    # One-level version snapshot: stash the content being overwritten so
+    # it can be restored, but only when content is actually changing.
+    if body.content is not None:
+        current = supabase.table("team_docs").select("title, content").eq("id", doc_id).eq("org_id", org_id).single().execute()
+        if current.data and current.data.get("content") != body.content:
+            supabase.table("team_docs").update({
+                "previous_title": current.data.get("title"),
+                "previous_content": current.data.get("content"),
+                "previous_saved_at": datetime.now(timezone.utc).isoformat(),
+            }).eq("id", doc_id).execute()
+
     update = {k: v for k, v in body.model_dump(exclude_none=True).items()}
     update["updated_by"] = user_id
     update["updated_at"] = datetime.now(timezone.utc).isoformat()
@@ -113,6 +125,26 @@ async def update_doc(doc_id: str, body: DocUpdate, current_user: Annotated[dict,
     if not result.data:
         raise HTTPException(status_code=404, detail="Doc not found.")
     return result.data[0]
+
+
+@router.post("/docs/{doc_id}/restore")
+async def restore_doc(doc_id: str, current_user: Annotated[dict, Depends(get_current_user)]):
+    """Swap in the previous saved version (one level back)."""
+    org_id = _require_org(_get_user_org(_uid(current_user)))
+    supabase = get_supabase()
+    current = supabase.table("team_docs").select("*").eq("id", doc_id).eq("org_id", org_id).single().execute()
+    if not current.data or not current.data.get("previous_content"):
+        raise HTTPException(status_code=404, detail="No previous version to restore.")
+
+    result = supabase.table("team_docs").update({
+        "title": current.data["previous_title"],
+        "content": current.data["previous_content"],
+        "previous_title": current.data["title"],
+        "previous_content": current.data["content"],
+        "previous_saved_at": datetime.now(timezone.utc).isoformat(),
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+    }).eq("id", doc_id).execute()
+    return result.data[0] if result.data else {}
 
 
 @router.delete("/docs/{doc_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -138,7 +170,11 @@ async def list_files(current_user: Annotated[dict, Depends(get_current_user)]):
 
 
 @router.post("/files", status_code=status.HTTP_201_CREATED)
-async def upload_file(current_user: Annotated[dict, Depends(get_current_user)], file: UploadFile = File(...)):
+async def upload_file(
+    current_user: Annotated[dict, Depends(get_current_user)],
+    file: UploadFile = File(...),
+    folder: str | None = Form(None),
+):
     user_id = _uid(current_user)
     org_id = _require_org(_get_user_org(user_id))
 
@@ -158,6 +194,7 @@ async def upload_file(current_user: Annotated[dict, Depends(get_current_user)], 
         "content_type": file.content_type,
         "size_bytes": len(contents),
         "uploaded_by": user_id,
+        "folder": folder,
     }).execute()
     return result.data[0] if result.data else {}
 

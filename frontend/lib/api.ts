@@ -930,11 +930,13 @@ export const workspaceApi = {
   getDoc: async (id: string): Promise<TeamDoc> => { const { data } = await api.get(`/api/workspace/docs/${id}`); return data; },
   updateDoc: async (id: string, body: { title?: string; content?: string; folder?: string }): Promise<TeamDoc> => { const { data } = await api.put(`/api/workspace/docs/${id}`, body); return data; },
   deleteDoc: async (id: string): Promise<void> => { await api.delete(`/api/workspace/docs/${id}`); },
+  restoreDoc: async (id: string): Promise<TeamDoc> => { const { data } = await api.post(`/api/workspace/docs/${id}/restore`); return data; },
 
   listFiles: async (): Promise<{ files: TeamFile[] }> => { const { data } = await api.get('/api/workspace/files'); return data; },
-  uploadFile: async (file: File): Promise<TeamFile> => {
+  uploadFile: async (file: File, folder?: string): Promise<TeamFile> => {
     const form = new FormData();
     form.append('file', file);
+    if (folder) form.append('folder', folder);
     const { data } = await api.post('/api/workspace/files', form, { headers: { 'Content-Type': 'multipart/form-data' } });
     return data;
   },

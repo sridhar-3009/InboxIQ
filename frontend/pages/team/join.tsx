@@ -29,7 +29,8 @@ export default function JoinOrgPage() {
       await teamsApi.joinOrg(token);
       setJoined(true);
       toast.success('You have joined the organization!');
-      setTimeout(() => router.push('/team'), 2000);
+      try { localStorage.setItem('mailair_new_member_joined_at', Date.now().toString()); } catch { /* ignore */ }
+      setTimeout(() => router.push('/workspace'), 2000);
     } catch {
       setError('This invite token is invalid or has expired.');
       toast.error('Invalid or expired invite token');
