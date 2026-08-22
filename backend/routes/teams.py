@@ -217,6 +217,40 @@ async def remove_member(member_user_id: str, current_user: Annotated[dict, Depen
 
 # ─── Email assignment endpoints ───────────────────────────────────────────────
 
+@router.get("/workload")
+async def get_workload(current_user: Annotated[dict, Depends(get_current_user)]):
+    """How many emails are currently assigned to each active team member."""
+    uid = _uid(current_user)
+    user_data = _get_user_org(uid)
+    org_id = _require_org(user_data)
+    supabase = get_supabase()
+
+    members = supabase.table("org_members").select(
+        "user_id, user_profiles(id, name, email)"
+    ).eq("org_id", org_id).eq("status", "active").execute()
+
+    assignments = supabase.table("email_assignments").select("assigned_to").eq("org_id", org_id).execute()
+    counts: dict[str, int] = {}
+    for a in assignments.data or []:
+        uid_assigned = a.get("assigned_to")
+        if uid_assigned:
+            counts[uid_assigned] = counts.get(uid_assigned, 0) + 1
+
+    workload = []
+    for m in members.data or []:
+        profile = m.get("user_profiles") or {}
+        member_uid = m.get("user_id")
+        if not member_uid:
+            continue
+        workload.append({
+            "user_id": member_uid,
+            "name": profile.get("name") or profile.get("email") or "Unknown",
+            "assigned_count": counts.get(member_uid, 0),
+        })
+    workload.sort(key=lambda x: x["assigned_count"], reverse=True)
+    return {"workload": workload}
+
+
 @router.get("/assignments/{email_id}")
 async def get_assignment(email_id: str, current_user: Annotated[dict, Depends(get_current_user)]):
     """Get assignment for a specific email."""

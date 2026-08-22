@@ -673,6 +673,7 @@ export interface TeamDoc {
   id: string;
   title: string;
   content?: string;
+  folder?: string | null;
   updated_at: string;
   updated_by?: string;
   created_by?: string;
@@ -709,4 +710,20 @@ export interface WorkspaceSettings {
   id: string;
   name: string;
   allowed_email_domains: string[] | null;
+}
+
+export interface AppNotification {
+  id: string;
+  type: string;
+  title: string;
+  body: string | null;
+  link: string | null;
+  is_read: boolean;
+  created_at: string;
+}
+
+export interface WorkloadEntry {
+  user_id: string;
+  name: string;
+  assigned_count: number;
 }

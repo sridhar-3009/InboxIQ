@@ -39,6 +39,9 @@ import { supabase } from '@/lib/supabase';
 import ThemeToggle from './ThemeToggle';
 import KeyboardShortcutsModal from './KeyboardShortcutsModal';
 import { useEmailStats } from '@/lib/hooks';
+import { notificationsApi } from '@/lib/api';
+import type { AppNotification } from '@/lib/types';
+import { formatDistanceToNow } from 'date-fns';
 
 interface NavItem {
   label: string;
@@ -105,6 +108,8 @@ export default function Layout({ children, title }: LayoutProps) {
   }, []);
   const [profileOpen, setProfileOpen] = useState(false);
   const [bellOpen, setBellOpen] = useState(false);
+  const [notifications, setNotifications] = useState<AppNotification[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
   const [signingOut, setSigningOut] = useState(false);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
@@ -126,6 +131,27 @@ export default function Layout({ children, title }: LayoutProps) {
 
   // Close sidebar on route change
   useEffect(() => { setSidebarOpen(false); }, [router.pathname]);
+
+  // Notifications: poll every 30s
+  useEffect(() => {
+    if (!session) return;
+    const load = () => {
+      notificationsApi.list()
+        .then(({ notifications, unread_count }) => { setNotifications(notifications); setUnreadCount(unread_count); })
+        .catch(() => {});
+    };
+    load();
+    const interval = setInterval(load, 30000);
+    return () => clearInterval(interval);
+  }, [session]);
+
+  const handleBellOpen = () => {
+    const next = !bellOpen;
+    setBellOpen(next);
+    if (next && unreadCount > 0) {
+      notificationsApi.markAllRead().then(() => setUnreadCount(0)).catch(() => {});
+    }
+  };
 
   // Close dropdowns on outside click
   useEffect(() => {
@@ -328,22 +354,44 @@ export default function Layout({ children, title }: LayoutProps) {
             {/* Bell */}
             <div className="relative" ref={bellRef}>
               <button
-                onClick={() => setBellOpen(!bellOpen)}
+                onClick={handleBellOpen}
                 className="rounded-lg p-1.5 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors relative"
                 aria-label="Notifications"
               >
                 <Bell className="h-5 w-5" />
+                {unreadCount > 0 && (
+                  <span className="absolute top-0.5 right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-urgent px-1 text-[10px] font-bold text-white">
+                    {unreadCount > 9 ? '9+' : unreadCount}
+                  </span>
+                )}
               </button>
               {bellOpen && (
-                <div className="absolute right-0 mt-2 w-72 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg py-1 z-50 animate-slide-down">
-                  <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+                <div className="absolute right-0 mt-2 w-80 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg py-1 z-50 animate-slide-down max-h-96 overflow-y-auto">
+                  <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700 sticky top-0 bg-white dark:bg-gray-800">
                     <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">Notifications</p>
                   </div>
-                  <div className="py-6 text-center">
-                    <Bell className="mx-auto h-8 w-8 text-gray-200 dark:text-gray-600 mb-2" />
-                    <p className="text-sm text-gray-500 dark:text-gray-400">No new notifications</p>
-                    <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">Urgent email alerts will appear here</p>
-                  </div>
+                  {notifications.length === 0 ? (
+                    <div className="py-6 text-center">
+                      <Bell className="mx-auto h-8 w-8 text-gray-200 dark:text-gray-600 mb-2" />
+                      <p className="text-sm text-gray-500 dark:text-gray-400">No new notifications</p>
+                      <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">Urgent email alerts will appear here</p>
+                    </div>
+                  ) : (
+                    notifications.map((n) => {
+                      const inner = (
+                        <div className="px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 border-b border-gray-50 dark:border-gray-700/50 last:border-0">
+                          <p className={clsx('text-sm', !n.is_read ? 'font-semibold text-gray-900 dark:text-gray-100' : 'text-gray-700 dark:text-gray-300')}>{n.title}</p>
+                          {n.body && <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-2">{n.body}</p>}
+                          <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-1">{formatDistanceToNow(new Date(n.created_at), { addSuffix: true })}</p>
+                        </div>
+                      );
+                      return n.link ? (
+                        <Link key={n.id} href={n.link} onClick={() => setBellOpen(false)}>{inner}</Link>
+                      ) : (
+                        <div key={n.id}>{inner}</div>
+                      );
+                    })
+                  )}
                 </div>
               )}
             </div>

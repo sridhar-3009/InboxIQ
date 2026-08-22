@@ -8,7 +8,49 @@ from datetime import datetime, timezone, timedelta
 logger = logging.getLogger(__name__)
 
 
-def _build_digest_html(emails: list[dict], period_label: str, now: datetime) -> str:
+async def _build_weekly_rollup_html(user_id: str) -> str:
+    """Email debt + revenue-at-risk + relationship alerts, rolled into
+    one 'state of your inbox' section for the weekly digest only."""
+    from services.relationship_service import get_email_debt, compute_relationship_scores
+    from services.revenue_service import get_revenue_at_risk
+
+    try:
+        debts = await get_email_debt(user_id)
+        relationships = await compute_relationship_scores(user_id)
+        at_risk = await get_revenue_at_risk(user_id)
+    except Exception:
+        logger.warning("Weekly rollup fetch failed for user %s", user_id, exc_info=True)
+        return ""
+
+    alerts = [r for r in relationships if r.get("alert")]
+    if not debts and not at_risk and not alerts:
+        return ""
+
+    parts = ['<div style="margin-top:20px;padding-top:16px;border-top:1px solid #e5e7eb;">']
+    parts.append('<h2 style="color:#111827;font-size:15px;margin:0 0 10px;">This week\'s state of your inbox</h2>')
+
+    if debts:
+        top = debts[:3]
+        parts.append(f'<p style="color:#374151;font-size:13px;margin:8px 0 4px;"><strong>{len(debts)} email(s) still owed a reply</strong></p>')
+        for d in top:
+            parts.append(f'<p style="color:#6b7280;font-size:12px;margin:2px 0;">• {d["contact_name"]} — {d["days_owed"]}d</p>')
+
+    if at_risk:
+        parts.append(f'<p style="color:#374151;font-size:13px;margin:12px 0 4px;"><strong>{len(at_risk)} deal(s) at risk</strong> (open revenue tied to a fading relationship)</p>')
+        for r in at_risk[:3]:
+            amount = f"{r['currency']} {r['total_amount']:,.0f}" if r.get("total_amount") else ""
+            parts.append(f'<p style="color:#6b7280;font-size:12px;margin:2px 0;">• {r["contact_name"]} — {amount}</p>')
+
+    if alerts:
+        parts.append(f'<p style="color:#374151;font-size:13px;margin:12px 0 4px;"><strong>{len(alerts)} relationship(s) gone quiet</strong></p>')
+        for a in alerts[:3]:
+            parts.append(f'<p style="color:#6b7280;font-size:12px;margin:2px 0;">• {a["contact_name"]} — {a["alert_message"]}</p>')
+
+    parts.append('</div>')
+    return "".join(parts)
+
+
+def _build_digest_html(emails: list[dict], period_label: str, now: datetime, rollup_html: str = "") -> str:
     urgent = [e for e in emails if (e.get("category") or "") in ("urgent", "urgent_client_request")]
     needs_resp = [e for e in emails if (e.get("category") or "") in ("needs_response", "follow_up", "follow_up_required")]
     other = [e for e in emails if e not in urgent and e not in needs_resp]
@@ -45,6 +87,7 @@ def _build_digest_html(emails: list[dict], period_label: str, now: datetime) -> 
         <h1 style="color:#111827;margin:0 0 4px;font-size:20px;">📬 Mailair {period_label} Digest</h1>
         <p style="color:#6b7280;font-size:13px;margin:0 0 16px;">{now.strftime('%B %d, %Y')} · {len(emails)} email{'s' if len(emails)!=1 else ''} received</p>
         {sections if sections else '<p style="color:#6b7280;">No emails in this period.</p>'}
+        {rollup_html}
         <div style="margin-top:20px;padding-top:16px;border-top:1px solid #e5e7eb;">
           <a href="https://mailair.company/email" style="background:#7c3aed;color:white;padding:8px 16px;border-radius:8px;text-decoration:none;font-size:13px;font-weight:600;">Open Inbox</a>
         </div>
@@ -109,7 +152,8 @@ async def run_digest(frequency: str = "daily") -> None:
                 if not emails:
                     continue
 
-                html = _build_digest_html(emails, period_label, now)
+                rollup_html = await _build_weekly_rollup_html(user_id) if frequency == "weekly" else ""
+                html = _build_digest_html(emails, period_label, now, rollup_html)
                 subject = f"[Mailair] {period_label} Digest — {len(emails)} email{'s' if len(emails)!=1 else ''}"
 
                 sent = False

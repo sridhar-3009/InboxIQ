@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useSessionContext } from '@supabase/auth-helpers-react';
 import {
   Users, Plus, Mail, Trash2, Crown, Shield, User, Copy, Check,
-  Activity, RefreshCw, Loader2, UserPlus, LogIn, Zap,
+  Activity, RefreshCw, Loader2, UserPlus, LogIn, Zap, BarChart2,
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import toast from 'react-hot-toast';
@@ -13,7 +13,7 @@ import Layout from '@/components/Layout';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import { teamsApi, autoAssignApi, type AutoAssignRule } from '@/lib/api';
 import { apiErrorMessage } from '@/lib/apiError';
-import type { Organization, OrgMember, ActivityLogEntry } from '@/lib/types';
+import type { Organization, OrgMember, ActivityLogEntry, WorkloadEntry } from '@/lib/types';
 
 const ROLE_CONFIG = {
   owner: { label: 'Owner', icon: Crown, classes: 'text-amber-700 bg-amber-50 dark:bg-amber-900/20 dark:text-amber-400 border-amber-200 dark:border-amber-700' },
@@ -55,7 +55,9 @@ export default function TeamPage() {
   const [yourRole, setYourRole] = useState('member');
   const [activity, setActivity] = useState<ActivityLogEntry[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'members' | 'activity' | 'rules'>('members');
+  const [activeTab, setActiveTab] = useState<'members' | 'workload' | 'activity' | 'rules'>('members');
+  const [workload, setWorkload] = useState<WorkloadEntry[]>([]);
+  const [workloadLoading, setWorkloadLoading] = useState(false);
 
   // Auto-assign rules state
   const [autoRules, setAutoRules] = useState<AutoAssignRule[]>([]);
@@ -112,6 +114,15 @@ export default function TeamPage() {
   useEffect(() => {
     if (session) { loadOrg(); loadActivity(); loadRules(); }
   }, [session, loadOrg, loadActivity, loadRules]);
+
+  useEffect(() => {
+    if (activeTab !== 'workload' || !session) return;
+    setWorkloadLoading(true);
+    teamsApi.getWorkload()
+      .then(({ workload }) => setWorkload(workload))
+      .catch((err) => toast.error(apiErrorMessage(err, 'Failed to load workload')))
+      .finally(() => setWorkloadLoading(false));
+  }, [activeTab, session]);
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -296,9 +307,10 @@ export default function TeamPage() {
               </div>
 
               {/* Tabs */}
-              <div className="flex gap-1 bg-gray-100 dark:bg-gray-800 rounded-xl p-1 w-fit">
+              <div className="flex gap-1 bg-gray-100 dark:bg-gray-800 rounded-xl p-1 w-full sm:w-fit overflow-x-auto scrollbar-hide">
                 {[
                   { id: 'members' as const, label: 'Members', icon: Users },
+                  { id: 'workload' as const, label: 'Workload', icon: BarChart2 },
                   { id: 'activity' as const, label: 'Activity', icon: Activity },
                   ...(isAdmin ? [{ id: 'rules' as const, label: 'Auto-Assign', icon: Zap }] : []),
                 ].map(({ id, label, icon: Icon }) => (
@@ -306,7 +318,7 @@ export default function TeamPage() {
                     key={id}
                     onClick={() => setActiveTab(id)}
                     className={clsx(
-                      'inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium transition-colors',
+                      'inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium transition-colors flex-shrink-0',
                       activeTab === id
                         ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm'
                         : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
@@ -401,6 +413,36 @@ export default function TeamPage() {
                       );
                     })}
                   </div>
+                </div>
+              )}
+
+              {activeTab === 'workload' && (
+                <div className="card divide-y divide-gray-100 dark:divide-gray-700">
+                  {workloadLoading ? (
+                    <div className="p-8 flex items-center justify-center"><Loader2 className="h-5 w-5 animate-spin text-gray-400" /></div>
+                  ) : workload.length === 0 ? (
+                    <div className="p-8 text-center text-sm text-gray-500 dark:text-gray-400">No active members yet.</div>
+                  ) : (
+                    (() => {
+                      const max = Math.max(...workload.map((w) => w.assigned_count), 1);
+                      return workload.map((w) => (
+                        <div key={w.user_id} className="flex items-center gap-4 px-5 py-3.5">
+                          <div className="h-8 w-8 flex-shrink-0 flex items-center justify-center rounded-full bg-gradient-to-br from-primary-500 to-primary-700 text-white text-xs font-bold">
+                            {w.name.charAt(0).toUpperCase()}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="text-sm font-medium text-gray-800 dark:text-gray-200 truncate">{w.name}</span>
+                              <span className="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0 ml-2">{w.assigned_count} assigned</span>
+                            </div>
+                            <div className="h-1.5 rounded-full bg-gray-100 dark:bg-gray-700 overflow-hidden">
+                              <div className="h-full bg-primary-500 rounded-full" style={{ width: `${(w.assigned_count / max) * 100}%` }} />
+                            </div>
+                          </div>
+                        </div>
+                      ));
+                    })()
+                  )}
                 </div>
               )}
 

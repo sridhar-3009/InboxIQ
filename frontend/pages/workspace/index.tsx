@@ -37,6 +37,7 @@ function DocsTab() {
   const [activeDoc, setActiveDoc] = useState<TeamDoc | null>(null);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [folder, setFolder] = useState('');
   const [saving, setSaving] = useState(false);
 
   const load = async () => {
@@ -57,6 +58,7 @@ function DocsTab() {
       setActiveDoc(doc);
       setTitle(doc.title);
       setContent(doc.content || '');
+      setFolder(doc.folder || '');
     } catch (err) {
       toast.error(apiErrorMessage(err, 'Failed to open doc'));
     }
@@ -76,7 +78,7 @@ function DocsTab() {
     if (!activeDoc) return;
     setSaving(true);
     try {
-      const updated = await workspaceApi.updateDoc(activeDoc.id, { title, content });
+      const updated = await workspaceApi.updateDoc(activeDoc.id, { title, content, folder: folder.trim() || undefined });
       setActiveDoc(updated);
       await load();
       toast.success('Saved');
@@ -101,12 +103,20 @@ function DocsTab() {
     return (
       <div className="card">
         <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-700 px-4 py-3 gap-3">
-          <input
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="flex-1 bg-transparent text-lg font-serif text-gray-900 dark:text-gray-100 focus:outline-none"
-            placeholder="Untitled"
-          />
+          <div className="flex-1 min-w-0">
+            <input
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="w-full bg-transparent text-lg font-serif text-gray-900 dark:text-gray-100 focus:outline-none"
+              placeholder="Untitled"
+            />
+            <input
+              value={folder}
+              onChange={(e) => setFolder(e.target.value)}
+              className="w-full bg-transparent text-xs text-gray-400 dark:text-gray-500 focus:outline-none mt-0.5"
+              placeholder="Folder (optional)"
+            />
+          </div>
           <button onClick={save} disabled={saving} className="btn-primary text-sm">
             {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />} Save
           </button>
@@ -137,22 +147,33 @@ function DocsTab() {
           <p className="text-sm">No docs yet.</p>
         </div>
       ) : (
-        <div className="card divide-y divide-gray-100 dark:divide-gray-700">
-          {docs.map((d) => (
-            <div key={d.id} className="flex items-center justify-between px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800/60 cursor-pointer group" onClick={() => openDoc(d.id)}>
-              <div className="flex items-center gap-3 min-w-0">
-                <FileText className="h-4 w-4 text-primary-600 flex-shrink-0" />
-                <span className="text-sm font-medium text-gray-800 dark:text-gray-200 truncate">{d.title || 'Untitled'}</span>
-              </div>
-              <div className="flex items-center gap-3 flex-shrink-0">
-                <span className="text-xs text-gray-400">{formatDistanceToNow(new Date(d.updated_at), { addSuffix: true })}</span>
-                <button onClick={(e) => { e.stopPropagation(); remove(d.id); }} className="opacity-0 group-hover:opacity-100 text-gray-300 hover:text-red-500">
-                  <Trash2 className="h-3.5 w-3.5" />
-                </button>
-              </div>
+        Object.entries(
+          docs.reduce<Record<string, TeamDoc[]>>((acc, d) => {
+            const key = d.folder?.trim() || 'Unsorted';
+            (acc[key] = acc[key] || []).push(d);
+            return acc;
+          }, {})
+        ).map(([folderName, folderDocs]) => (
+          <div key={folderName} className="mb-5">
+            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2 px-1">{folderName}</p>
+            <div className="card divide-y divide-gray-100 dark:divide-gray-700">
+              {folderDocs.map((d) => (
+                <div key={d.id} className="flex items-center justify-between px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800/60 cursor-pointer group" onClick={() => openDoc(d.id)}>
+                  <div className="flex items-center gap-3 min-w-0">
+                    <FileText className="h-4 w-4 text-primary-600 flex-shrink-0" />
+                    <span className="text-sm font-medium text-gray-800 dark:text-gray-200 truncate">{d.title || 'Untitled'}</span>
+                  </div>
+                  <div className="flex items-center gap-3 flex-shrink-0">
+                    <span className="text-xs text-gray-400">{formatDistanceToNow(new Date(d.updated_at), { addSuffix: true })}</span>
+                    <button onClick={(e) => { e.stopPropagation(); remove(d.id); }} className="opacity-0 group-hover:opacity-100 text-gray-300 hover:text-red-500">
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </div>
+        ))
       )}
     </div>
   );
@@ -160,10 +181,15 @@ function DocsTab() {
 
 // ─── Files ──────────────────────────────────────────────────────────────────
 
+function isPreviewable(contentType: string | null): boolean {
+  return !!contentType && (contentType.startsWith('image/') || contentType === 'application/pdf');
+}
+
 function FilesTab() {
   const [files, setFiles] = useState<TeamFile[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [preview, setPreview] = useState<{ url: string; filename: string; contentType: string | null } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const load = async () => {
@@ -203,6 +229,16 @@ function FilesTab() {
     }
   };
 
+  const handleOpen = async (f: TeamFile) => {
+    if (!isPreviewable(f.content_type)) return handleDownload(f.id);
+    try {
+      const { url, filename } = await workspaceApi.downloadFile(f.id);
+      setPreview({ url, filename, contentType: f.content_type });
+    } catch (err) {
+      toast.error(apiErrorMessage(err, 'Preview failed'));
+    }
+  };
+
   const remove = async (id: string) => {
     try {
       await workspaceApi.deleteFile(id);
@@ -232,7 +268,10 @@ function FilesTab() {
         <div className="card divide-y divide-gray-100 dark:divide-gray-700">
           {files.map((f) => (
             <div key={f.id} className="flex items-center justify-between px-4 py-3 group">
-              <div className="flex items-center gap-3 min-w-0">
+              <div
+                className={clsx('flex items-center gap-3 min-w-0', isPreviewable(f.content_type) && 'cursor-pointer')}
+                onClick={() => handleOpen(f)}
+              >
                 <Paperclip className="h-4 w-4 text-gray-400 flex-shrink-0" />
                 <div className="min-w-0">
                   <p className="text-sm font-medium text-gray-800 dark:text-gray-200 truncate">{f.filename}</p>
@@ -247,6 +286,25 @@ function FilesTab() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {preview && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-6" onClick={() => setPreview(null)}>
+          <div className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden max-w-3xl max-h-[85vh] w-full flex flex-col" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+              <p className="text-sm font-medium text-gray-800 dark:text-gray-200 truncate">{preview.filename}</p>
+              <button onClick={() => setPreview(null)} className="btn-icon"><X className="h-4 w-4" /></button>
+            </div>
+            <div className="flex-1 overflow-auto bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+              {preview.contentType?.startsWith('image/') ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={preview.url} alt={preview.filename} className="max-w-full max-h-full object-contain" />
+              ) : (
+                <iframe src={preview.url} title={preview.filename} className="w-full h-[75vh]" />
+              )}
+            </div>
+          </div>
         </div>
       )}
     </div>

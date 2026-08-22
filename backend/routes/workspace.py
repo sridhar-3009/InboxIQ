@@ -15,8 +15,11 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, status
 from pydantic import BaseModel, Field
 
+import re
+
 from database import get_supabase
 from middleware.auth import get_current_user
+from services.notification_service import create_notification
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/workspace", tags=["workspace"])
@@ -52,11 +55,13 @@ def _require_admin(user_data: dict):
 class DocCreate(BaseModel):
     title: str = "Untitled"
     content: str = ""
+    folder: str | None = None
 
 
 class DocUpdate(BaseModel):
     title: str | None = None
     content: str | None = None
+    folder: str | None = None
 
 
 @router.get("/docs")
@@ -66,7 +71,7 @@ async def list_docs(current_user: Annotated[dict, Depends(get_current_user)]):
     supabase = get_supabase()
     result = (
         supabase.table("team_docs")
-        .select("id, title, updated_at, updated_by")
+        .select("id, title, folder, updated_at, updated_by")
         .eq("org_id", org_id)
         .order("updated_at", desc=True)
         .execute()
@@ -80,7 +85,7 @@ async def create_doc(body: DocCreate, current_user: Annotated[dict, Depends(get_
     org_id = _require_org(_get_user_org(user_id))
     supabase = get_supabase()
     result = supabase.table("team_docs").insert({
-        "org_id": org_id, "title": body.title, "content": body.content,
+        "org_id": org_id, "title": body.title, "content": body.content, "folder": body.folder,
         "created_by": user_id, "updated_by": user_id,
     }).execute()
     return result.data[0] if result.data else {}
@@ -229,17 +234,53 @@ async def list_messages(channel_id: str, current_user: Annotated[dict, Depends(g
     return {"messages": list(reversed(result.data or []))}
 
 
+def _notify_mentions(content: str, org_id: str, author_name: str, channel_id: str):
+    """Parse @name tokens and notify any matching org member (best-effort)."""
+    handles = set(re.findall(r"@([a-zA-Z0-9_.\-]+)", content))
+    if not handles:
+        return
+    try:
+        supabase = get_supabase()
+        members = (
+            supabase.table("org_members")
+            .select("user_id, user_profiles(id, name, email)")
+            .eq("org_id", org_id)
+            .eq("status", "active")
+            .execute()
+        )
+        for m in members.data or []:
+            profile = m.get("user_profiles") or {}
+            name = (profile.get("name") or "").strip()
+            email_handle = (profile.get("email") or "").split("@")[0]
+            name_handle = name.lower().replace(" ", "")
+            if not m.get("user_id"):
+                continue
+            if any(h.lower() in (name_handle, email_handle.lower()) for h in handles):
+                create_notification(
+                    user_id=m["user_id"],
+                    org_id=org_id,
+                    notif_type="mention",
+                    title=f"{author_name} mentioned you",
+                    body=content[:200],
+                    link="/workspace",
+                )
+    except Exception:
+        logger.warning("Mention notification lookup failed for org %s", org_id, exc_info=True)
+
+
 @router.post("/channels/{channel_id}/messages", status_code=status.HTTP_201_CREATED)
 async def send_message(channel_id: str, body: MessageCreate, current_user: Annotated[dict, Depends(get_current_user)]):
     user_id = _uid(current_user)
     user_data = _get_user_org(user_id)
     org_id = _require_org(user_data)
+    author_name = user_data.get("name") or user_data.get("email", "Someone")
     supabase = get_supabase()
     result = supabase.table("team_messages").insert({
         "channel_id": channel_id, "org_id": org_id, "user_id": user_id,
-        "author_name": user_data.get("name") or user_data.get("email", "Someone"),
+        "author_name": author_name,
         "content": body.content,
     }).execute()
+    _notify_mentions(body.content, org_id, author_name, channel_id)
     return result.data[0] if result.data else {}
 
 

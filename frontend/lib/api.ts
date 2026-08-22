@@ -32,6 +32,8 @@ import type {
   TeamChannel,
   TeamMessage,
   WorkspaceSettings,
+  AppNotification,
+  WorkloadEntry,
 } from './types';
 
 // ─── Axios Instance ───────────────────────────────────────────────────────────
@@ -564,6 +566,10 @@ export const teamsApi = {
   removeMember: async (userId: string): Promise<void> => {
     await api.delete(`/api/teams/org/members/${userId}`);
   },
+  getWorkload: async (): Promise<{ workload: WorkloadEntry[] }> => {
+    const { data } = await api.get('/api/teams/workload');
+    return data;
+  },
   getAssignment: async (emailId: string): Promise<EmailAssignment | null> => {
     const { data } = await api.get(`/api/teams/assignments/${emailId}`);
     return data;
@@ -920,9 +926,9 @@ export const newsletterApi = {
 
 export const workspaceApi = {
   listDocs: async (): Promise<{ docs: TeamDoc[] }> => { const { data } = await api.get('/api/workspace/docs'); return data; },
-  createDoc: async (title: string, content = ''): Promise<TeamDoc> => { const { data } = await api.post('/api/workspace/docs', { title, content }); return data; },
+  createDoc: async (title: string, content = '', folder?: string): Promise<TeamDoc> => { const { data } = await api.post('/api/workspace/docs', { title, content, folder }); return data; },
   getDoc: async (id: string): Promise<TeamDoc> => { const { data } = await api.get(`/api/workspace/docs/${id}`); return data; },
-  updateDoc: async (id: string, body: { title?: string; content?: string }): Promise<TeamDoc> => { const { data } = await api.put(`/api/workspace/docs/${id}`, body); return data; },
+  updateDoc: async (id: string, body: { title?: string; content?: string; folder?: string }): Promise<TeamDoc> => { const { data } = await api.put(`/api/workspace/docs/${id}`, body); return data; },
   deleteDoc: async (id: string): Promise<void> => { await api.delete(`/api/workspace/docs/${id}`); },
 
   listFiles: async (): Promise<{ files: TeamFile[] }> => { const { data } = await api.get('/api/workspace/files'); return data; },
@@ -942,6 +948,17 @@ export const workspaceApi = {
 
   getSettings: async (): Promise<WorkspaceSettings> => { const { data } = await api.get('/api/workspace/settings'); return data; },
   updateSettings: async (body: { allowed_email_domains?: string[] }): Promise<WorkspaceSettings> => { const { data } = await api.put('/api/workspace/settings', body); return data; },
+};
+
+// ─── Notification Endpoints ────────────────────────────────────────────────
+
+export const notificationsApi = {
+  list: async (): Promise<{ notifications: AppNotification[]; unread_count: number }> => {
+    const { data } = await api.get('/api/notifications');
+    return data;
+  },
+  markRead: async (id: string): Promise<void> => { await api.post(`/api/notifications/${id}/read`); },
+  markAllRead: async (): Promise<void> => { await api.post('/api/notifications/read-all'); },
 };
 
 export default api;

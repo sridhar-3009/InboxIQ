@@ -286,6 +286,7 @@ def start_email_listener() -> AsyncIOScheduler:
     from services.sequence_service import flush_sequence_steps
     from workers.social_poster import post_daily_social
     from database import keep_supabase_alive
+    from workers.reminder_worker import send_email_debt_reminders
 
     scheduler.add_job(
         poll_all_users,
@@ -363,6 +364,16 @@ def start_email_listener() -> AsyncIOScheduler:
         minute=0,
         id="daily_social_post",
         name="Daily Social Post (Instagram / LinkedIn via Zernio)",
+        replace_existing=True,
+        misfire_grace_time=1800,
+    )
+    scheduler.add_job(
+        send_email_debt_reminders,
+        trigger="cron",
+        hour=10,
+        minute=0,
+        id="email_debt_reminders",
+        name="Email Debt Reminders",
         replace_existing=True,
         misfire_grace_time=1800,
     )
