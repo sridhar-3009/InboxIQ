@@ -144,8 +144,18 @@ async def invite_member(body: InviteMemberBody, current_user: Annotated[dict, De
     org_id = _require_org(user_data)
     _require_admin(user_data)
 
-    invite_token = secrets.token_urlsafe(32)
     supabase = get_supabase()
+    org = supabase.table("organizations").select("allowed_email_domains").eq("id", org_id).single().execute()
+    allowed_domains = (org.data or {}).get("allowed_email_domains") or []
+    if allowed_domains:
+        domain = body.email.split("@")[-1].lower()
+        if domain not in [d.lower().lstrip("@") for d in allowed_domains]:
+            raise HTTPException(
+                status_code=400,
+                detail=f"This workspace only allows invites to: {', '.join(allowed_domains)}",
+            )
+
+    invite_token = secrets.token_urlsafe(32)
     supabase.table("org_members").insert({
         "org_id": org_id,
         "invited_email": body.email,

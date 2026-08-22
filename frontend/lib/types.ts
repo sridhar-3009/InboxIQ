@@ -666,3 +666,47 @@ export interface ShopOrder {
   status: 'pending' | 'paid' | 'shipped' | 'delivered' | 'cancelled';
   created_at: string;
 }
+
+// ─── Workspace Types (docs / files / chat / settings) ──────────────────────────
+
+export interface TeamDoc {
+  id: string;
+  title: string;
+  content?: string;
+  updated_at: string;
+  updated_by?: string;
+  created_by?: string;
+  created_at?: string;
+}
+
+export interface TeamFile {
+  id: string;
+  filename: string;
+  storage_path: string;
+  content_type: string | null;
+  size_bytes: number;
+  uploaded_by: string;
+  created_at: string;
+}
+
+export interface TeamChannel {
+  id: string;
+  name: string;
+  created_by: string;
+  created_at: string;
+}
+
+export interface TeamMessage {
+  id: string;
+  channel_id: string;
+  user_id: string;
+  author_name: string;
+  content: string;
+  created_at: string;
+}
+
+export interface WorkspaceSettings {
+  id: string;
+  name: string;
+  allowed_email_domains: string[] | null;
+}

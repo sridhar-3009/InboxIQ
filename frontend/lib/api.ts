@@ -27,6 +27,11 @@ import type {
   VoiceMatchSummary,
   ClientTouchpoint,
   Benchmark,
+  TeamDoc,
+  TeamFile,
+  TeamChannel,
+  TeamMessage,
+  WorkspaceSettings,
 } from './types';
 
 // ─── Axios Instance ───────────────────────────────────────────────────────────
@@ -909,6 +914,34 @@ export const newsletterApi = {
   unsubscribe: async (): Promise<void> => {
     await api.post('/api/newsletter/unsubscribe');
   },
+};
+
+// ─── Workspace Endpoints (docs / files / chat / settings) ─────────────────────
+
+export const workspaceApi = {
+  listDocs: async (): Promise<{ docs: TeamDoc[] }> => { const { data } = await api.get('/api/workspace/docs'); return data; },
+  createDoc: async (title: string, content = ''): Promise<TeamDoc> => { const { data } = await api.post('/api/workspace/docs', { title, content }); return data; },
+  getDoc: async (id: string): Promise<TeamDoc> => { const { data } = await api.get(`/api/workspace/docs/${id}`); return data; },
+  updateDoc: async (id: string, body: { title?: string; content?: string }): Promise<TeamDoc> => { const { data } = await api.put(`/api/workspace/docs/${id}`, body); return data; },
+  deleteDoc: async (id: string): Promise<void> => { await api.delete(`/api/workspace/docs/${id}`); },
+
+  listFiles: async (): Promise<{ files: TeamFile[] }> => { const { data } = await api.get('/api/workspace/files'); return data; },
+  uploadFile: async (file: File): Promise<TeamFile> => {
+    const form = new FormData();
+    form.append('file', file);
+    const { data } = await api.post('/api/workspace/files', form, { headers: { 'Content-Type': 'multipart/form-data' } });
+    return data;
+  },
+  downloadFile: async (id: string): Promise<{ url: string; filename: string }> => { const { data } = await api.get(`/api/workspace/files/${id}/download`); return data; },
+  deleteFile: async (id: string): Promise<void> => { await api.delete(`/api/workspace/files/${id}`); },
+
+  listChannels: async (): Promise<{ channels: TeamChannel[] }> => { const { data } = await api.get('/api/workspace/channels'); return data; },
+  createChannel: async (name: string): Promise<TeamChannel> => { const { data } = await api.post('/api/workspace/channels', { name }); return data; },
+  listMessages: async (channelId: string): Promise<{ messages: TeamMessage[] }> => { const { data } = await api.get(`/api/workspace/channels/${channelId}/messages`); return data; },
+  sendMessage: async (channelId: string, content: string): Promise<TeamMessage> => { const { data } = await api.post(`/api/workspace/channels/${channelId}/messages`, { content }); return data; },
+
+  getSettings: async (): Promise<WorkspaceSettings> => { const { data } = await api.get('/api/workspace/settings'); return data; },
+  updateSettings: async (body: { allowed_email_domains?: string[] }): Promise<WorkspaceSettings> => { const { data } = await api.put('/api/workspace/settings', body); return data; },
 };
 
 export default api;

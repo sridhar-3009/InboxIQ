@@ -31,6 +31,7 @@ import {
   FileText,
   DollarSign,
   ShoppingBag,
+  FileStack,
 } from 'lucide-react';
 import clsx from 'clsx';
 import toast from 'react-hot-toast';
@@ -61,6 +62,7 @@ const navItems: NavItem[] = [
   { label: 'Shop',          href: '/shop',            icon: ShoppingBag },
   { label: 'CRM',           href: '/crm',             icon: Users },
   { label: 'Team',          href: '/team',            icon: Users },
+  { label: 'Workspace',     href: '/workspace',       icon: FileStack },
   { label: 'Settings',      href: '/settings',        icon: Settings },
   { label: 'Billing',       href: '/billing',         icon: CreditCard },
 ];
