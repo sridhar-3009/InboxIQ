@@ -23,7 +23,7 @@ jobs:
           response=$(curl -s -o /tmp/response.json -w "%{http_code}" \
             -X POST "${MAILAIR_API_URL}/api/cron/daily-social-post" \
             -H "X-Cron-Secret: ${MAILAIR_CRON_SECRET}" \
-            --max-time 90)
+            --max-time 240)
           echo "HTTP status: $response"
           cat /tmp/response.json
           if [ "$response" -ge 400 ]; then
