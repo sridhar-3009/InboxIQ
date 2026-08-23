@@ -73,6 +73,7 @@ class Settings(BaseSettings):
     ZERNIO_LINKEDIN_ACCOUNT_ID: str = ""
     ZERNIO_LINKEDIN_ORG_URN: str = ""  # e.g. urn:li:organization:123456 — omit to post to a personal profile instead
     SOCIAL_AUTOPOST_ENABLED: bool = False  # daily cron only fires when this is explicitly true
+    CRON_SECRET: str = ""  # shared secret for external triggers (e.g. GitHub Actions) — see routes/cron.py
 
     # Environment
     ENVIRONMENT: str = "development"

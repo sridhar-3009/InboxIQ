@@ -1,0 +1,35 @@
+name: Daily Social Post
+
+# Fires the daily Instagram/LinkedIn post on a schedule, independent of
+# whether the Render backend happens to be awake — the HTTP request
+# itself wakes it. Also runnable manually (workflow_dispatch) to test
+# without waiting for the schedule.
+#
+# Needs two repo secrets (Settings → Secrets and variables → Actions):
+#   MAILAIR_API_URL    e.g. https://inboxiq-sby6.onrender.com
+#   MAILAIR_CRON_SECRET  same value as CRON_SECRET on the Render service
+
+on:
+  schedule:
+    - cron: '0 15 * * *'  # 15:00 UTC daily — matches the in-process job's time
+  workflow_dispatch:
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call the daily social post trigger
+        run: |
+          response=$(curl -s -o /tmp/response.json -w "%{http_code}" \
+            -X POST "${MAILAIR_API_URL}/api/cron/daily-social-post" \
+            -H "X-Cron-Secret: ${MAILAIR_CRON_SECRET}" \
+            --max-time 90)
+          echo "HTTP status: $response"
+          cat /tmp/response.json
+          if [ "$response" -ge 400 ]; then
+            echo "Trigger failed"
+            exit 1
+          fi
+        env:
+          MAILAIR_API_URL: ${{ secrets.MAILAIR_API_URL }}
+          MAILAIR_CRON_SECRET: ${{ secrets.MAILAIR_CRON_SECRET }}
