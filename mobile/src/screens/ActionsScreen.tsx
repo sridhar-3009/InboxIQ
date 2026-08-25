@@ -8,13 +8,13 @@ import Toast from 'react-native-toast-message';
 import { actionsApi, apiErrorMessage } from '../lib/api';
 
 const STATUS_ICON: Record<string, { name: keyof typeof Ionicons.glyphMap; color: string }> = {
-  pending:     { name: 'ellipse-outline', color: '#f59e0b' },
-  in_progress: { name: 'time-outline', color: '#60a5fa' },
-  completed:   { name: 'checkmark-circle', color: '#10b981' },
+  pending:     { name: 'ellipse-outline', color: '#b3812c' },
+  in_progress: { name: 'time-outline', color: '#e17c4e' },
+  completed:   { name: 'checkmark-circle', color: '#5c7a4a' },
 };
 
 const PRIORITY_COLOR: Record<string, string> = {
-  high: '#ef4444', medium: '#f59e0b', low: '#10b981',
+  high: '#b5432f', medium: '#b3812c', low: '#5c7a4a',
 };
 
 function ActionItem({ item, onToggle }: { item: any; onToggle: () => void }) {
@@ -80,7 +80,7 @@ export default function ActionsScreen() {
   const pending = actions.filter(a => a.status === 'pending').length;
   const overdue = actions.filter(a => a.status === 'pending' && a.deadline && new Date(a.deadline) < new Date()).length;
 
-  if (loading) return <View style={styles.centered}><ActivityIndicator color="#60a5fa" size="large" /></View>;
+  if (loading) return <View style={styles.centered}><ActivityIndicator color="#e17c4e" size="large" /></View>;
 
   return (
     <View style={styles.container}>
@@ -92,8 +92,8 @@ export default function ActionsScreen() {
         </View>
         {overdue > 0 && (
           <View style={[styles.stat, styles.statOverdue]}>
-            <Text style={[styles.statNum, { color: '#ef4444' }]}>{overdue}</Text>
-            <Text style={[styles.statLabel, { color: '#ef4444' }]}>Overdue</Text>
+            <Text style={[styles.statNum, { color: '#b5432f' }]}>{overdue}</Text>
+            <Text style={[styles.statLabel, { color: '#b5432f' }]}>Overdue</Text>
           </View>
         )}
         <View style={styles.stat}>
@@ -121,10 +121,10 @@ export default function ActionsScreen() {
           data={filtered}
           keyExtractor={i => i.id}
           renderItem={({ item }) => <ActionItem item={item} onToggle={() => handleToggle(item)} />}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} tintColor="#60a5fa" />}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} tintColor="#e17c4e" />}
           ListEmptyComponent={
             <View style={styles.centered}>
-              <Ionicons name="checkmark-done-outline" size={48} color="#334155" />
+              <Ionicons name="checkmark-done-outline" size={48} color="#4a4033" />
               <Text style={styles.emptyText}>No actions</Text>
             </View>
           }
@@ -135,31 +135,31 @@ export default function ActionsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#0f172a' },
+  container: { flex: 1, backgroundColor: '#221c16' },
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingTop: 80 },
   stats: { flexDirection: 'row', gap: 12, paddingHorizontal: 16, paddingVertical: 12 },
-  stat: { flex: 1, backgroundColor: '#1e293b', borderRadius: 12, padding: 12, alignItems: 'center', borderWidth: 1, borderColor: '#334155' },
-  statOverdue: { borderColor: '#7f1d1d', backgroundColor: '#1c0a0a' },
+  stat: { flex: 1, backgroundColor: '#332b22', borderRadius: 12, padding: 12, alignItems: 'center', borderWidth: 1, borderColor: '#4a4033' },
+  statOverdue: { borderColor: '#4a231c', backgroundColor: '#1c0a0a' },
   statNum: { color: '#fff', fontSize: 22, fontWeight: '800' },
-  statLabel: { color: '#64748b', fontSize: 12, marginTop: 2 },
+  statLabel: { color: '#83745e', fontSize: 12, marginTop: 2 },
   filterRow: { flexDirection: 'row', gap: 8, paddingHorizontal: 16, marginBottom: 8 },
-  filterBtn: { flex: 1, paddingVertical: 7, borderRadius: 10, backgroundColor: '#1e293b', alignItems: 'center', borderWidth: 1, borderColor: '#334155' },
-  filterActive: { backgroundColor: '#1e3a8a', borderColor: '#2563eb' },
-  filterText: { color: '#64748b', fontSize: 13, fontWeight: '500' },
-  filterTextActive: { color: '#60a5fa' },
-  item: { flexDirection: 'row', paddingHorizontal: 16, paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: '#1e293b' },
+  filterBtn: { flex: 1, paddingVertical: 7, borderRadius: 10, backgroundColor: '#332b22', alignItems: 'center', borderWidth: 1, borderColor: '#4a4033' },
+  filterActive: { backgroundColor: '#5e2a1a', borderColor: '#b04723' },
+  filterText: { color: '#83745e', fontSize: 13, fontWeight: '500' },
+  filterTextActive: { color: '#e17c4e' },
+  item: { flexDirection: 'row', paddingHorizontal: 16, paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: '#332b22' },
   itemOverdue: { backgroundColor: '#0c0a0a' },
   statusBtn: { marginRight: 12, paddingTop: 2 },
   itemBody: { flex: 1 },
-  title: { color: '#e2e8f0', fontSize: 15, fontWeight: '600', marginBottom: 4 },
-  titleDone: { color: '#475569', textDecorationLine: 'line-through' },
-  desc: { color: '#64748b', fontSize: 13, lineHeight: 18, marginBottom: 6 },
+  title: { color: '#e7e0d4', fontSize: 15, fontWeight: '600', marginBottom: 4 },
+  titleDone: { color: '#635646', textDecorationLine: 'line-through' },
+  desc: { color: '#83745e', fontSize: 13, lineHeight: 18, marginBottom: 6 },
   metaRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   priorityDot: { width: 8, height: 8, borderRadius: 4 },
-  deadline: { color: '#64748b', fontSize: 12 },
-  deadlineOverdue: { color: '#ef4444' },
-  errorBox: { margin: 16, backgroundColor: '#1e293b', borderRadius: 12, padding: 16, alignItems: 'center' },
-  errorText: { color: '#ef4444', marginBottom: 8 },
-  retryText: { color: '#60a5fa', fontWeight: '600' },
-  emptyText: { color: '#475569', marginTop: 12, fontSize: 15 },
+  deadline: { color: '#83745e', fontSize: 12 },
+  deadlineOverdue: { color: '#b5432f' },
+  errorBox: { margin: 16, backgroundColor: '#332b22', borderRadius: 12, padding: 16, alignItems: 'center' },
+  errorText: { color: '#b5432f', marginBottom: 8 },
+  retryText: { color: '#e17c4e', fontWeight: '600' },
+  emptyText: { color: '#635646', marginTop: 12, fontSize: 15 },
 });

@@ -26,7 +26,7 @@ function MenuItem({ icon, color, label, sub, onPress }: MenuItemProps) {
         <Text style={styles.label}>{label}</Text>
         <Text style={styles.sub}>{sub}</Text>
       </View>
-      <Ionicons name="chevron-forward" size={18} color="#334155" />
+      <Ionicons name="chevron-forward" size={18} color="#4a4033" />
     </TouchableOpacity>
   );
 }
@@ -49,25 +49,31 @@ export default function MoreScreen() {
     {
       title: 'Business Intelligence',
       items: [
-        { icon: 'trending-up-outline', color: '#10b981', label: 'Revenue',       sub: 'Track payments & pipeline',    screen: 'Revenue' },
-        { icon: 'people-outline',       color: '#60a5fa', label: 'Relationships', sub: 'Contact scores & sentiment',   screen: 'Relationships' },
-        { icon: 'document-text-outline',color: '#a78bfa', label: 'Quotes',        sub: 'Proposals & pricing',          screen: 'Quotes' },
+        { icon: 'trending-up-outline', color: '#5c7a4a', label: 'Revenue',       sub: 'Track payments & pipeline',    screen: 'Revenue' },
+        { icon: 'people-outline',       color: '#e17c4e', label: 'Relationships', sub: 'Contact scores & sentiment',   screen: 'Relationships' },
+        { icon: 'document-text-outline',color: '#93a06a', label: 'Quotes',        sub: 'Proposals & pricing',          screen: 'Quotes' },
         { icon: 'timer-outline',        color: '#f97316', label: 'SLA Tracker',   sub: 'Response compliance & breaches',screen: 'SLA' },
+      ],
+    },
+    {
+      title: 'Team',
+      items: [
+        { icon: 'grid-outline',         color: '#e17c4e', label: 'Workspace', sub: 'Docs, files, chat & settings', screen: 'Workspace' },
       ],
     },
     {
       title: 'Productivity',
       items: [
         { icon: 'git-branch-outline',   color: '#f97316', label: 'Sequences',  sub: 'Email automation flows',       screen: 'Sequences' },
-        { icon: 'newspaper-outline',    color: '#e879f9', label: 'Briefs',     sub: 'Meeting prep summaries',       screen: 'Briefs' },
-        { icon: 'library-outline',      color: '#f59e0b', label: 'Knowledge',  sub: 'Extracted email insights',     screen: 'Knowledge' },
+        { icon: 'newspaper-outline',    color: '#93a06a', label: 'Briefs',     sub: 'Meeting prep summaries',       screen: 'Briefs' },
+        { icon: 'library-outline',      color: '#b3812c', label: 'Knowledge',  sub: 'Extracted email insights',     screen: 'Knowledge' },
       ],
     },
     {
       title: 'Account',
       items: [
-        { icon: 'card-outline',         color: '#10b981', label: 'Billing',    sub: 'Plan, usage & invoices',       screen: 'Billing' },
-        { icon: 'person-circle-outline',color: '#94a3b8', label: 'Settings',   sub: 'Profile & sign out',           screen: 'Settings' },
+        { icon: 'card-outline',         color: '#5c7a4a', label: 'Billing',    sub: 'Plan, usage & invoices',       screen: 'Billing' },
+        { icon: 'person-circle-outline',color: '#a99b83', label: 'Settings',   sub: 'Profile & sign out',           screen: 'Settings' },
       ],
     },
   ];
@@ -98,15 +104,15 @@ export default function MoreScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#0f172a' },
+  container: { flex: 1, backgroundColor: '#221c16' },
   content: { padding: 16, paddingBottom: 32 },
   section: { marginBottom: 24 },
-  sectionTitle: { color: '#64748b', fontSize: 11, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 8, marginLeft: 4 },
-  group: { backgroundColor: '#1e293b', borderRadius: 16, borderWidth: 1, borderColor: '#334155', overflow: 'hidden' },
+  sectionTitle: { color: '#83745e', fontSize: 11, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 8, marginLeft: 4 },
+  group: { backgroundColor: '#332b22', borderRadius: 16, borderWidth: 1, borderColor: '#4a4033', overflow: 'hidden' },
   item: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 14 },
   iconBox: { width: 40, height: 40, borderRadius: 12, justifyContent: 'center', alignItems: 'center', marginRight: 14 },
   itemBody: { flex: 1 },
-  label: { color: '#e2e8f0', fontSize: 15, fontWeight: '600', marginBottom: 2 },
-  sub: { color: '#64748b', fontSize: 12 },
-  divider: { height: 1, backgroundColor: '#334155', marginLeft: 70 },
+  label: { color: '#e7e0d4', fontSize: 15, fontWeight: '600', marginBottom: 2 },
+  sub: { color: '#83745e', fontSize: 12 },
+  divider: { height: 1, backgroundColor: '#4a4033', marginLeft: 70 },
 });

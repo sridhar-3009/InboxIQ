@@ -42,11 +42,11 @@ export default function RevenueScreen() {
     }
   };
 
-  if (loading) return <View style={styles.centered}><ActivityIndicator color="#60a5fa" size="large" /></View>;
+  if (loading) return <View style={styles.centered}><ActivityIndicator color="#e17c4e" size="large" /></View>;
 
   if (error) return (
     <View style={styles.centered}>
-      <Ionicons name="wifi-outline" size={48} color="#334155" />
+      <Ionicons name="wifi-outline" size={48} color="#4a4033" />
       <Text style={styles.errorText}>{error}</Text>
       <TouchableOpacity style={styles.retryBtn} onPress={load}><Text style={styles.retryText}>Retry</Text></TouchableOpacity>
     </View>
@@ -56,7 +56,7 @@ export default function RevenueScreen() {
     <ScrollView
       style={styles.container}
       contentContainerStyle={styles.content}
-      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} tintColor="#60a5fa" />}
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} tintColor="#e17c4e" />}
     >
       <TouchableOpacity style={[styles.scanBtn, scanning && styles.btnDisabled]} onPress={handleScan} disabled={scanning}>
         {scanning
@@ -68,11 +68,11 @@ export default function RevenueScreen() {
       {data && (
         <>
           <View style={styles.row}>
-            <MetricCard label="Total Revenue" value={fmt(data.total_revenue)} color="#10b981" icon="cash-outline" />
-            <MetricCard label="This Month" value={fmt(data.monthly_revenue)} color="#60a5fa" icon="calendar-outline" />
+            <MetricCard label="Total Revenue" value={fmt(data.total_revenue)} color="#5c7a4a" icon="cash-outline" />
+            <MetricCard label="This Month" value={fmt(data.monthly_revenue)} color="#e17c4e" icon="calendar-outline" />
           </View>
           <View style={styles.row}>
-            <MetricCard label="Pipeline" value={fmt(data.pipeline_value)} color="#a78bfa" icon="trending-up-outline" />
+            <MetricCard label="Pipeline" value={fmt(data.pipeline_value)} color="#93a06a" icon="trending-up-outline" />
             <MetricCard label="Clients" value={data.client_count ?? 0} color="#f97316" icon="people-outline" />
           </View>
 
@@ -81,7 +81,7 @@ export default function RevenueScreen() {
               <Text style={styles.sectionTitle}>Recent Revenue Signals</Text>
               {data.recent_signals.map((s: any, i: number) => (
                 <View key={i} style={styles.signal}>
-                  <View style={[styles.signalDot, { backgroundColor: SIGNAL_COLORS[s.signal_type] || '#64748b' }]} />
+                  <View style={[styles.signalDot, { backgroundColor: SIGNAL_COLORS[s.signal_type] || '#83745e' }]} />
                   <View style={styles.signalBody}>
                     <Text style={styles.signalType}>{s.signal_type?.replace(/_/g, ' ')}</Text>
                     {s.amount && <Text style={styles.signalAmount}>{fmt(s.amount)}</Text>}
@@ -110,11 +110,11 @@ function MetricCard({ label, value, color, icon }: { label: string; value: strin
 }
 
 const SIGNAL_COLORS: Record<string, string> = {
-  payment_received: '#10b981',
-  invoice_sent: '#60a5fa',
-  quote_accepted: '#a78bfa',
+  payment_received: '#5c7a4a',
+  invoice_sent: '#e17c4e',
+  quote_accepted: '#93a06a',
   new_client: '#f97316',
-  renewal: '#f59e0b',
+  renewal: '#b3812c',
 };
 
 function fmt(v: number) {
@@ -125,29 +125,29 @@ function fmt(v: number) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#0f172a' },
+  container: { flex: 1, backgroundColor: '#221c16' },
   content: { padding: 16, paddingBottom: 32 },
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 32 },
   scanBtn: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
-    backgroundColor: '#2563eb', borderRadius: 14, paddingVertical: 13, marginBottom: 20,
+    backgroundColor: '#b04723', borderRadius: 14, paddingVertical: 13, marginBottom: 20,
   },
   scanText: { color: '#fff', fontWeight: '700', fontSize: 14 },
   btnDisabled: { opacity: 0.6 },
   row: { flexDirection: 'row', gap: 10, marginBottom: 10 },
-  card: { flex: 1, backgroundColor: '#1e293b', borderRadius: 16, padding: 14, borderWidth: 1, borderColor: '#334155' },
+  card: { flex: 1, backgroundColor: '#332b22', borderRadius: 16, padding: 14, borderWidth: 1, borderColor: '#4a4033' },
   iconBg: { width: 36, height: 36, borderRadius: 10, justifyContent: 'center', alignItems: 'center', marginBottom: 10 },
-  cardValue: { color: '#f1f5f9', fontSize: 20, fontWeight: '800', marginBottom: 2 },
-  cardLabel: { color: '#64748b', fontSize: 12 },
-  section: { backgroundColor: '#1e293b', borderRadius: 14, padding: 14, borderWidth: 1, borderColor: '#334155', marginTop: 10 },
-  sectionTitle: { color: '#94a3b8', fontSize: 12, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 12 },
+  cardValue: { color: '#f3efe8', fontSize: 20, fontWeight: '800', marginBottom: 2 },
+  cardLabel: { color: '#83745e', fontSize: 12 },
+  section: { backgroundColor: '#332b22', borderRadius: 14, padding: 14, borderWidth: 1, borderColor: '#4a4033', marginTop: 10 },
+  sectionTitle: { color: '#a99b83', fontSize: 12, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 12 },
   signal: { flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 12 },
   signalDot: { width: 8, height: 8, borderRadius: 4 },
   signalBody: { flex: 1 },
-  signalType: { color: '#cbd5e1', fontSize: 13, textTransform: 'capitalize' },
-  signalAmount: { color: '#10b981', fontSize: 12, marginTop: 1 },
-  signalDate: { color: '#475569', fontSize: 11 },
-  errorText: { color: '#ef4444', marginTop: 12, marginBottom: 12, textAlign: 'center' },
-  retryBtn: { backgroundColor: '#1e293b', borderRadius: 10, paddingHorizontal: 20, paddingVertical: 10 },
-  retryText: { color: '#60a5fa', fontWeight: '600' },
+  signalType: { color: '#d3c7b4', fontSize: 13, textTransform: 'capitalize' },
+  signalAmount: { color: '#5c7a4a', fontSize: 12, marginTop: 1 },
+  signalDate: { color: '#635646', fontSize: 11 },
+  errorText: { color: '#b5432f', marginTop: 12, marginBottom: 12, textAlign: 'center' },
+  retryBtn: { backgroundColor: '#332b22', borderRadius: 10, paddingHorizontal: 20, paddingVertical: 10 },
+  retryText: { color: '#e17c4e', fontWeight: '600' },
 });

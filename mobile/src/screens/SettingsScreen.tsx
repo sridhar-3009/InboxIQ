@@ -76,20 +76,20 @@ export default function SettingsScreen() {
               value={displayName}
               onChangeText={setDisplayName}
               placeholder="Your name"
-              placeholderTextColor="#475569"
+              placeholderTextColor="#635646"
               autoFocus
             />
             <TouchableOpacity style={styles.saveBtn} onPress={handleSaveName} disabled={savingName}>
               {savingName ? <ActivityIndicator color="#fff" size="small" /> : <Text style={styles.saveBtnText}>Save</Text>}
             </TouchableOpacity>
             <TouchableOpacity style={styles.cancelBtn} onPress={() => setEditName(false)}>
-              <Ionicons name="close" size={18} color="#64748b" />
+              <Ionicons name="close" size={18} color="#83745e" />
             </TouchableOpacity>
           </View>
         ) : (
           <TouchableOpacity style={styles.fieldRow} onPress={() => setEditName(true)}>
             <Text style={styles.fieldValue}>{displayName || 'Tap to set name'}</Text>
-            <Ionicons name="pencil-outline" size={16} color="#475569" />
+            <Ionicons name="pencil-outline" size={16} color="#635646" />
           </TouchableOpacity>
         )}
       </View>
@@ -111,9 +111,9 @@ export default function SettingsScreen() {
       {/* Sign out */}
       <TouchableOpacity style={styles.signoutBtn} onPress={handleSignOut} disabled={signOutLoading}>
         {signOutLoading
-          ? <ActivityIndicator color="#ef4444" size="small" />
+          ? <ActivityIndicator color="#b5432f" size="small" />
           : <>
-              <Ionicons name="log-out-outline" size={18} color="#ef4444" />
+              <Ionicons name="log-out-outline" size={18} color="#b5432f" />
               <Text style={styles.signoutText}>Sign Out</Text>
             </>
         }
@@ -123,32 +123,32 @@ export default function SettingsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#0f172a' },
+  container: { flex: 1, backgroundColor: '#221c16' },
   content: { padding: 16, paddingBottom: 40 },
-  card: { backgroundColor: '#1e293b', borderRadius: 16, padding: 16, borderWidth: 1, borderColor: '#334155', marginBottom: 16 },
-  cardTitle: { color: '#64748b', fontSize: 11, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 14 },
+  card: { backgroundColor: '#332b22', borderRadius: 16, padding: 16, borderWidth: 1, borderColor: '#4a4033', marginBottom: 16 },
+  cardTitle: { color: '#83745e', fontSize: 11, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 14 },
   avatarRow: { flexDirection: 'row', alignItems: 'center', gap: 14, marginBottom: 14 },
-  avatar: { width: 48, height: 48, borderRadius: 24, backgroundColor: '#1e3a8a', justifyContent: 'center', alignItems: 'center' },
-  avatarText: { color: '#60a5fa', fontWeight: '800', fontSize: 20 },
+  avatar: { width: 48, height: 48, borderRadius: 24, backgroundColor: '#5e2a1a', justifyContent: 'center', alignItems: 'center' },
+  avatarText: { color: '#e17c4e', fontWeight: '800', fontSize: 20 },
   profileInfo: { flex: 1 },
-  profileEmail: { color: '#e2e8f0', fontSize: 14, fontWeight: '600' },
-  profileSub: { color: '#475569', fontSize: 12, marginTop: 2 },
-  divider: { height: 1, backgroundColor: '#0f172a', marginVertical: 12 },
-  fieldLabel: { color: '#64748b', fontSize: 12, marginBottom: 8 },
+  profileEmail: { color: '#e7e0d4', fontSize: 14, fontWeight: '600' },
+  profileSub: { color: '#635646', fontSize: 12, marginTop: 2 },
+  divider: { height: 1, backgroundColor: '#221c16', marginVertical: 12 },
+  fieldLabel: { color: '#83745e', fontSize: 12, marginBottom: 8 },
   fieldRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  fieldValue: { color: '#cbd5e1', fontSize: 15 },
+  fieldValue: { color: '#d3c7b4', fontSize: 15 },
   editRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  input: { flex: 1, backgroundColor: '#0f172a', borderRadius: 10, paddingHorizontal: 12, paddingVertical: 9, color: '#fff', fontSize: 14, borderWidth: 1, borderColor: '#334155' },
-  saveBtn: { backgroundColor: '#2563eb', borderRadius: 10, paddingHorizontal: 14, paddingVertical: 9 },
+  input: { flex: 1, backgroundColor: '#221c16', borderRadius: 10, paddingHorizontal: 12, paddingVertical: 9, color: '#fff', fontSize: 14, borderWidth: 1, borderColor: '#4a4033' },
+  saveBtn: { backgroundColor: '#b04723', borderRadius: 10, paddingHorizontal: 14, paddingVertical: 9 },
   saveBtnText: { color: '#fff', fontWeight: '700', fontSize: 13 },
   cancelBtn: { padding: 6 },
   infoRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  infoLabel: { color: '#64748b', fontSize: 14 },
-  infoValue: { color: '#94a3b8', fontSize: 14 },
+  infoLabel: { color: '#83745e', fontSize: 14 },
+  infoValue: { color: '#a99b83', fontSize: 14 },
   signoutBtn: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
-    backgroundColor: '#1e293b', borderRadius: 14, paddingVertical: 14,
-    borderWidth: 1, borderColor: '#450a0a',
+    backgroundColor: '#332b22', borderRadius: 14, paddingVertical: 14,
+    borderWidth: 1, borderColor: '#3a1c14',
   },
-  signoutText: { color: '#ef4444', fontWeight: '700', fontSize: 15 },
+  signoutText: { color: '#b5432f', fontWeight: '700', fontSize: 15 },
 });

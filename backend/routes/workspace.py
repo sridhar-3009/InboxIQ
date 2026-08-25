@@ -3,10 +3,9 @@ Small-team workspace — shared docs, file sharing, simple chat, and
 workspace settings. Built on top of the existing organizations /
 org_members tables (invites + roles already live in routes/teams.py).
 
-Deliberately NOT: real-time collaborative multi-cursor doc editing,
-video/audio calls, or device-level policy enforcement — none of those
-translate to "just build it for the web," see the product discussion
-this was scoped from.
+Deliberately NOT: real-time collaborative multi-cursor doc editing or
+device-level policy enforcement. Voice/video calls are handled
+separately in routes/calls.py (WebRTC signaling, tied to channels here).
 """
 import logging
 from datetime import datetime, timezone

@@ -34,6 +34,10 @@ import type {
   WorkspaceSettings,
   AppNotification,
   WorkloadEntry,
+  MarketingAudience,
+  MarketingContact,
+  MarketingCampaign,
+  MarketingUsage,
 } from './types';
 
 // ─── Axios Instance ───────────────────────────────────────────────────────────
@@ -920,6 +924,27 @@ export const newsletterApi = {
   unsubscribe: async (): Promise<void> => {
     await api.post('/api/newsletter/unsubscribe');
   },
+};
+
+// ─── Campaigns Endpoints (email marketing) ─────────────────────────────────
+
+export const campaignsApi = {
+  listAudiences: async (): Promise<{ audiences: MarketingAudience[] }> => { const { data } = await api.get('/api/marketing/audiences'); return data; },
+  createAudience: async (name: string): Promise<MarketingAudience> => { const { data } = await api.post('/api/marketing/audiences', { name }); return data; },
+  deleteAudience: async (id: string): Promise<void> => { await api.delete(`/api/marketing/audiences/${id}`); },
+
+  listContacts: async (audienceId: string): Promise<{ contacts: MarketingContact[] }> => { const { data } = await api.get(`/api/marketing/audiences/${audienceId}/contacts`); return data; },
+  addContacts: async (audienceId: string, emailsRaw: string): Promise<{ added: number }> => { const { data } = await api.post(`/api/marketing/audiences/${audienceId}/contacts`, { emails_raw: emailsRaw }); return data; },
+  removeContact: async (audienceId: string, contactId: string): Promise<void> => { await api.delete(`/api/marketing/audiences/${audienceId}/contacts/${contactId}`); },
+
+  listCampaigns: async (): Promise<{ campaigns: MarketingCampaign[] }> => { const { data } = await api.get('/api/marketing/campaigns'); return data; },
+  createCampaign: async (body: { name: string; audience_id: string; subject: string; body_html: string; from_name?: string }): Promise<MarketingCampaign> => { const { data } = await api.post('/api/marketing/campaigns', body); return data; },
+  getCampaign: async (id: string): Promise<MarketingCampaign> => { const { data } = await api.get(`/api/marketing/campaigns/${id}`); return data; },
+  updateCampaign: async (id: string, body: Partial<{ name: string; subject: string; body_html: string; from_name: string; audience_id: string }>): Promise<MarketingCampaign> => { const { data } = await api.put(`/api/marketing/campaigns/${id}`, body); return data; },
+  deleteCampaign: async (id: string): Promise<void> => { await api.delete(`/api/marketing/campaigns/${id}`); },
+  sendCampaign: async (id: string): Promise<{ sent: number; failed: number; status: string }> => { const { data } = await api.post(`/api/marketing/campaigns/${id}/send`); return data; },
+
+  getUsage: async (): Promise<MarketingUsage> => { const { data } = await api.get('/api/marketing/usage'); return data; },
 };
 
 // ─── Workspace Endpoints (docs / files / chat / settings) ─────────────────────

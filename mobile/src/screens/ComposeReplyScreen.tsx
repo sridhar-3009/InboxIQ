@@ -63,7 +63,7 @@ export default function ComposeReplyScreen({ route, navigation }: Props) {
   };
 
   if (loadingDraft) return (
-    <View style={styles.centered}><ActivityIndicator color="#60a5fa" size="large" /></View>
+    <View style={styles.centered}><ActivityIndicator color="#e17c4e" size="large" /></View>
   );
 
   return (
@@ -85,7 +85,7 @@ export default function ComposeReplyScreen({ route, navigation }: Props) {
           value={body}
           onChangeText={setBody}
           placeholder="Write your reply here, or tap AI Draft to generate one..."
-          placeholderTextColor="#334155"
+          placeholderTextColor="#4a4033"
           textAlignVertical="top"
           autoFocus={false}
         />
@@ -119,24 +119,24 @@ export default function ComposeReplyScreen({ route, navigation }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#0f172a' },
-  centered: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#0f172a' },
+  container: { flex: 1, backgroundColor: '#221c16' },
+  centered: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#221c16' },
   metaBox: {
     flexDirection: 'row', alignItems: 'flex-start', gap: 8,
     paddingHorizontal: 16, paddingVertical: 12,
-    borderBottomWidth: 1, borderBottomColor: '#1e293b',
+    borderBottomWidth: 1, borderBottomColor: '#332b22',
   },
-  metaLabel: { color: '#475569', fontSize: 13, fontWeight: '600', marginTop: 1 },
-  metaValue: { flex: 1, color: '#94a3b8', fontSize: 13, lineHeight: 18 },
+  metaLabel: { color: '#635646', fontSize: 13, fontWeight: '600', marginTop: 1 },
+  metaValue: { flex: 1, color: '#a99b83', fontSize: 13, lineHeight: 18 },
   bodyScroll: { flex: 1 },
   bodyContent: { flexGrow: 1, padding: 16 },
   bodyInput: {
-    flex: 1, color: '#e2e8f0', fontSize: 15, lineHeight: 24,
+    flex: 1, color: '#e7e0d4', fontSize: 15, lineHeight: 24,
     minHeight: 180,
   },
   toolbar: {
     flexDirection: 'row', gap: 10, paddingHorizontal: 16, paddingVertical: 12,
-    borderTopWidth: 1, borderTopColor: '#1e293b', backgroundColor: '#0f172a',
+    borderTopWidth: 1, borderTopColor: '#332b22', backgroundColor: '#221c16',
   },
   aiBtn: {
     flexDirection: 'row', alignItems: 'center', gap: 6,
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
   aiBtnText: { color: '#fff', fontWeight: '700', fontSize: 14 },
   sendBtn: {
     flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6,
-    backgroundColor: '#2563eb', borderRadius: 12, paddingVertical: 12,
+    backgroundColor: '#b04723', borderRadius: 12, paddingVertical: 12,
   },
   sendBtnText: { color: '#fff', fontWeight: '700', fontSize: 15 },
   btnDisabled: { opacity: 0.5 },

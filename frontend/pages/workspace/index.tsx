@@ -12,6 +12,7 @@ import toast from 'react-hot-toast';
 import clsx from 'clsx';
 import Layout from '@/components/Layout';
 import LoadingSpinner from '@/components/LoadingSpinner';
+import CallPanel from '@/components/CallPanel';
 import { workspaceApi } from '@/lib/api';
 import { apiErrorMessage } from '@/lib/apiError';
 import type { TeamDoc, TeamFile, TeamChannel, TeamMessage, WorkspaceSettings } from '@/lib/types';
@@ -466,6 +467,9 @@ function ChatTab() {
       <div className="flex-1 flex flex-col min-w-0">
         {activeChannel ? (
           <>
+            <div className="px-4 pt-3">
+              <CallPanel key={activeChannel} channelId={activeChannel} />
+            </div>
             <div className="flex-1 overflow-y-auto p-4 space-y-3">
               {messages.map((m) => (
                 <div key={m.id}>

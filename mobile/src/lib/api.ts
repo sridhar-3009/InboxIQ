@@ -87,6 +87,10 @@ export const relationshipsApi = {
     const { data } = await api.get(`/api/relationships/${encodeURIComponent(email)}/sentiment`);
     return data;
   },
+  getDebt: async () => {
+    const { data } = await api.get('/api/relationships/debt');
+    return data;
+  },
 };
 
 export const revenueApi = {
@@ -194,6 +198,93 @@ export const contactsApi = {
   },
   getContact: async (email: string) => {
     const { data } = await api.get(`/api/contacts/${encodeURIComponent(email)}`);
+    return data;
+  },
+};
+
+export const notificationsApi = {
+  list: async () => {
+    const { data } = await api.get('/api/notifications');
+    return data;
+  },
+  markRead: async (id: string) => {
+    await api.post(`/api/notifications/${id}/read`);
+  },
+  markAllRead: async () => {
+    await api.post('/api/notifications/read-all');
+  },
+};
+
+export const workspaceApi = {
+  listDocs: async () => {
+    const { data } = await api.get('/api/workspace/docs');
+    return data;
+  },
+  getDoc: async (id: string) => {
+    const { data } = await api.get(`/api/workspace/docs/${id}`);
+    return data;
+  },
+  createDoc: async (title: string, content = '', folder?: string) => {
+    const { data } = await api.post('/api/workspace/docs', { title, content, folder });
+    return data;
+  },
+  updateDoc: async (id: string, body: { title?: string; content?: string; folder?: string }) => {
+    const { data } = await api.put(`/api/workspace/docs/${id}`, body);
+    return data;
+  },
+  deleteDoc: async (id: string) => {
+    await api.delete(`/api/workspace/docs/${id}`);
+  },
+  restoreDoc: async (id: string) => {
+    const { data } = await api.post(`/api/workspace/docs/${id}/restore`);
+    return data;
+  },
+
+  listFiles: async () => {
+    const { data } = await api.get('/api/workspace/files');
+    return data;
+  },
+  uploadFile: async (fileUri: string, filename: string, mimeType: string, folder?: string) => {
+    const form = new FormData();
+    // React Native FormData file shape — not a browser File object.
+    form.append('file', { uri: fileUri, name: filename, type: mimeType } as unknown as Blob);
+    if (folder) form.append('folder', folder);
+    const { data } = await api.post('/api/workspace/files', form, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return data;
+  },
+  downloadFile: async (id: string) => {
+    const { data } = await api.get(`/api/workspace/files/${id}/download`);
+    return data;
+  },
+  deleteFile: async (id: string) => {
+    await api.delete(`/api/workspace/files/${id}`);
+  },
+
+  listChannels: async () => {
+    const { data } = await api.get('/api/workspace/channels');
+    return data;
+  },
+  createChannel: async (name: string) => {
+    const { data } = await api.post('/api/workspace/channels', { name });
+    return data;
+  },
+  listMessages: async (channelId: string) => {
+    const { data } = await api.get(`/api/workspace/channels/${channelId}/messages`);
+    return data;
+  },
+  sendMessage: async (channelId: string, content: string) => {
+    const { data } = await api.post(`/api/workspace/channels/${channelId}/messages`, { content });
+    return data;
+  },
+
+  getSettings: async () => {
+    const { data } = await api.get('/api/workspace/settings');
+    return data;
+  },
+  updateSettings: async (body: { allowed_email_domains?: string[] }) => {
+    const { data } = await api.put('/api/workspace/settings', body);
     return data;
   },
 };

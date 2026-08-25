@@ -115,7 +115,7 @@ export default function SignInScreen() {
           <TextInput
             style={styles.input}
             placeholder="Email"
-            placeholderTextColor="#64748b"
+            placeholderTextColor="#83745e"
             value={email}
             onChangeText={setEmail}
             autoCapitalize="none"
@@ -126,7 +126,7 @@ export default function SignInScreen() {
           <TextInput
             style={styles.input}
             placeholder="Password"
-            placeholderTextColor="#64748b"
+            placeholderTextColor="#83745e"
             value={password}
             onChangeText={setPassword}
             secureTextEntry
@@ -153,29 +153,29 @@ export default function SignInScreen() {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#0f172a' },
+  safe: { flex: 1, backgroundColor: '#221c16' },
   inner: { flexGrow: 1, justifyContent: 'center', paddingHorizontal: 32, paddingVertical: 40 },
   logo: { fontSize: 36, fontWeight: '800', color: '#fff', textAlign: 'center', marginBottom: 6 },
-  logoBlue: { color: '#60a5fa' },
-  subtitle: { color: '#64748b', textAlign: 'center', marginBottom: 32, fontSize: 15 },
+  logoBlue: { color: '#e17c4e' },
+  subtitle: { color: '#83745e', textAlign: 'center', marginBottom: 32, fontSize: 15 },
   googleBtn: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10,
-    backgroundColor: '#1e293b', borderRadius: 14, paddingVertical: 14,
-    borderWidth: 1, borderColor: '#334155', marginBottom: 16,
+    backgroundColor: '#332b22', borderRadius: 14, paddingVertical: 14,
+    borderWidth: 1, borderColor: '#4a4033', marginBottom: 16,
   },
   googleIcon: { color: '#ea4335', fontWeight: '900', fontSize: 18 },
-  googleText: { color: '#e2e8f0', fontWeight: '600', fontSize: 15 },
+  googleText: { color: '#e7e0d4', fontWeight: '600', fontSize: 15 },
   dividerRow: { flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 16 },
-  dividerLine: { flex: 1, height: 1, backgroundColor: '#1e293b' },
-  dividerText: { color: '#475569', fontSize: 13 },
+  dividerLine: { flex: 1, height: 1, backgroundColor: '#332b22' },
+  dividerText: { color: '#635646', fontSize: 13 },
   input: {
-    backgroundColor: '#1e293b', borderRadius: 14, paddingHorizontal: 16, paddingVertical: 14,
-    color: '#fff', marginBottom: 12, fontSize: 15, borderWidth: 1, borderColor: '#334155',
+    backgroundColor: '#332b22', borderRadius: 14, paddingHorizontal: 16, paddingVertical: 14,
+    color: '#fff', marginBottom: 12, fontSize: 15, borderWidth: 1, borderColor: '#4a4033',
   },
   btn: {
-    backgroundColor: '#2563eb', borderRadius: 14, paddingVertical: 15,
+    backgroundColor: '#b04723', borderRadius: 14, paddingVertical: 15,
     alignItems: 'center', marginTop: 4, marginBottom: 16,
   },
   btnText: { color: '#fff', fontWeight: '700', fontSize: 15 },
-  toggle: { color: '#60a5fa', textAlign: 'center', fontSize: 14 },
+  toggle: { color: '#e17c4e', textAlign: 'center', fontSize: 14 },
 });

@@ -48,6 +48,10 @@ class Settings(BaseSettings):
     # Frontend base URL (used for Razorpay checkout callback URLs)
     FRONTEND_URL: str = "http://localhost:3000"
 
+    # This backend's own public base URL — used for links that must hit
+    # the API directly (e.g. campaign unsubscribe links), not the frontend.
+    BACKEND_URL: str = "http://localhost:8000"
+
     # Platform admin
     ADMIN_EMAIL: str = "saisridhart@gmail.com"
 

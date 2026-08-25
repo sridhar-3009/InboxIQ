@@ -8,10 +8,10 @@ import Toast from 'react-native-toast-message';
 import { quotesApi, apiErrorMessage } from '../lib/api';
 
 const STATUS_STYLE: Record<string, { bg: string; text: string }> = {
-  draft:    { bg: '#1e293b', text: '#94a3b8' },
-  sent:     { bg: '#1e3a8a', text: '#93c5fd' },
+  draft:    { bg: '#332b22', text: '#a99b83' },
+  sent:     { bg: '#5e2a1a', text: '#93c5fd' },
   accepted: { bg: '#14532d', text: '#86efac' },
-  rejected: { bg: '#450a0a', text: '#fca5a5' },
+  rejected: { bg: '#3a1c14', text: '#e0a89a' },
 };
 
 const NEXT_STATUSES: Record<string, string[]> = {
@@ -81,7 +81,7 @@ export default function QuotesScreen() {
     }
   };
 
-  if (loading) return <View style={styles.centered}><ActivityIndicator color="#60a5fa" size="large" /></View>;
+  if (loading) return <View style={styles.centered}><ActivityIndicator color="#e17c4e" size="large" /></View>;
 
   return (
     <View style={styles.container}>
@@ -97,11 +97,11 @@ export default function QuotesScreen() {
           renderItem={({ item }) => (
             <QuoteItem item={item} onStatusChange={status => handleStatusChange(item.id, status)} />
           )}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} tintColor="#60a5fa" />}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} tintColor="#e17c4e" />}
           contentContainerStyle={{ paddingVertical: 8 }}
           ListEmptyComponent={
             <View style={styles.centered}>
-              <Ionicons name="document-text-outline" size={48} color="#334155" />
+              <Ionicons name="document-text-outline" size={48} color="#4a4033" />
               <Text style={styles.emptyText}>No quotes yet</Text>
             </View>
           }
@@ -112,23 +112,23 @@ export default function QuotesScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#0f172a' },
+  container: { flex: 1, backgroundColor: '#221c16' },
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingTop: 80 },
-  item: { marginHorizontal: 16, marginVertical: 6, backgroundColor: '#1e293b', borderRadius: 14, padding: 14, borderWidth: 1, borderColor: '#334155' },
+  item: { marginHorizontal: 16, marginVertical: 6, backgroundColor: '#332b22', borderRadius: 14, padding: 14, borderWidth: 1, borderColor: '#4a4033' },
   itemHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
-  title: { flex: 1, color: '#e2e8f0', fontSize: 15, fontWeight: '600', marginRight: 10 },
+  title: { flex: 1, color: '#e7e0d4', fontSize: 15, fontWeight: '600', marginRight: 10 },
   badge: { borderRadius: 8, paddingHorizontal: 10, paddingVertical: 3 },
   badgeText: { fontSize: 11, fontWeight: '700', textTransform: 'capitalize' },
-  amount: { color: '#10b981', fontSize: 18, fontWeight: '800', marginBottom: 4 },
-  client: { color: '#94a3b8', fontSize: 13, marginBottom: 2 },
-  date: { color: '#475569', fontSize: 11, marginBottom: 8 },
+  amount: { color: '#5c7a4a', fontSize: 18, fontWeight: '800', marginBottom: 4 },
+  client: { color: '#a99b83', fontSize: 13, marginBottom: 2 },
+  date: { color: '#635646', fontSize: 11, marginBottom: 8 },
   actions: { flexDirection: 'row', gap: 8, marginTop: 4 },
-  actionBtn: { flex: 1, paddingVertical: 8, borderRadius: 10, backgroundColor: '#0f172a', alignItems: 'center', borderWidth: 1, borderColor: '#334155' },
+  actionBtn: { flex: 1, paddingVertical: 8, borderRadius: 10, backgroundColor: '#221c16', alignItems: 'center', borderWidth: 1, borderColor: '#4a4033' },
   acceptBtn: { backgroundColor: '#14532d', borderColor: '#166534' },
-  rejectBtn: { backgroundColor: '#450a0a', borderColor: '#7f1d1d' },
-  actionText: { color: '#e2e8f0', fontSize: 13, fontWeight: '600' },
-  errorBox: { margin: 16, backgroundColor: '#1e293b', borderRadius: 12, padding: 16, alignItems: 'center' },
-  errorText: { color: '#ef4444', marginBottom: 8 },
-  retryText: { color: '#60a5fa', fontWeight: '600' },
-  emptyText: { color: '#475569', marginTop: 12, fontSize: 15 },
+  rejectBtn: { backgroundColor: '#3a1c14', borderColor: '#4a231c' },
+  actionText: { color: '#e7e0d4', fontSize: 13, fontWeight: '600' },
+  errorBox: { margin: 16, backgroundColor: '#332b22', borderRadius: 12, padding: 16, alignItems: 'center' },
+  errorText: { color: '#b5432f', marginBottom: 8 },
+  retryText: { color: '#e17c4e', fontWeight: '600' },
+  emptyText: { color: '#635646', marginTop: 12, fontSize: 15 },
 });

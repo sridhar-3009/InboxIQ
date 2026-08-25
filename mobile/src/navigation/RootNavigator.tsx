@@ -13,6 +13,8 @@ import KnowledgeScreen from '../screens/KnowledgeScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import BillingScreen from '../screens/BillingScreen';
 import SLAScreen from '../screens/SLAScreen';
+import WorkspaceScreen from '../screens/WorkspaceScreen';
+import NotificationsScreen from '../screens/NotificationsScreen';
 import type { RootStackParamList } from './types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -21,10 +23,10 @@ export default function RootNavigator() {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerStyle: { backgroundColor: '#0f172a' },
-        headerTintColor: '#f1f5f9',
+        headerStyle: { backgroundColor: '#221c16' },
+        headerTintColor: '#f3efe8',
         headerShadowVisible: false,
-        contentStyle: { backgroundColor: '#0f172a' },
+        contentStyle: { backgroundColor: '#221c16' },
       }}
     >
       <Stack.Screen name="Main" component={TabNavigator} options={{ headerShown: false }} />
@@ -41,6 +43,8 @@ export default function RootNavigator() {
       <Stack.Screen name="Settings" component={SettingsScreen} options={{ title: 'Settings' }} />
       <Stack.Screen name="Billing" component={BillingScreen} options={{ title: 'Billing & Plan' }} />
       <Stack.Screen name="SLA" component={SLAScreen} options={{ title: 'SLA Tracker' }} />
+      <Stack.Screen name="Workspace" component={WorkspaceScreen} options={{ title: 'Workspace' }} />
+      <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ title: 'Notifications' }} />
     </Stack.Navigator>
   );
 }

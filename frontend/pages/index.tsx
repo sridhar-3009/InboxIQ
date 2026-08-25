@@ -7,6 +7,9 @@ import {
   X,
   Mail,
   Quote,
+  Megaphone,
+  Users,
+  BarChart2,
 } from 'lucide-react';
 import { useState } from 'react';
 import { useSessionContext } from '@supabase/auth-helpers-react';
@@ -22,6 +25,7 @@ function Navbar({ isLoggedIn }: { isLoggedIn: boolean }) {
             <img src="/logo.svg" alt="Mailair" className="h-8 w-auto cursor-pointer" />
           </Link>
           <div className="hidden md:flex items-center gap-9">
+            <Link href="/campaigns" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">Campaigns</Link>
             <a href="#approach" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">Approach</a>
             <a href="#how-it-works" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">How it works</a>
             <a href="#pricing" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">Pricing</a>
@@ -89,7 +93,8 @@ function Hero({ isLoggedIn }: { isLoggedIn: boolean }) {
           <p className="mt-6 text-lg text-gray-600 leading-relaxed max-w-lg">
             Mailair sits on top of Gmail and quietly does the sorting you'd do yourself if
             you had two more hours a day — urgent client emails up front, action items
-            pulled out, replies drafted in your voice.
+            pulled out, replies drafted in your voice. Then, when you're ready to reach
+            people instead of just responding to them, send them a campaign from the same place.
           </p>
           <div className="mt-9 flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <Link
@@ -146,6 +151,79 @@ function Hero({ isLoggedIn }: { isLoggedIn: boolean }) {
                 <div className="text-xs text-gray-500 mt-0.5">{stat.label}</div>
               </div>
             ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── Campaigns ─────────────────────────────────────────────────────────────
+function Campaigns() {
+  return (
+    <section className="px-5 sm:px-8 py-20 sm:py-28 bg-primary-50/40 border-t border-gray-200">
+      <div className="mx-auto max-w-6xl grid lg:grid-cols-[0.95fr_1.05fr] gap-14 items-center">
+        <div className="lg:order-2">
+          <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-primary-700 mb-6">
+            <Megaphone className="h-3.5 w-3.5" />
+            Email marketing, built in
+          </p>
+          <h2 className="font-serif text-3xl sm:text-4xl text-gray-900 leading-tight">
+            Build a list. Send a campaign. Track what happens next.
+          </h2>
+          <p className="mt-5 text-[15px] text-gray-600 leading-relaxed max-w-lg">
+            Mailair isn't just for sorting what lands in your inbox anymore — it's where you
+            send outbound too. Paste in a list of contacts, write a campaign, and send it
+            straight from the same account, with unsubscribes and bounces handled for you
+            automatically.
+          </p>
+          <ul className="mt-8 space-y-4">
+            {[
+              { icon: Users, text: 'Audiences — paste contacts in, no CSV wrangling required' },
+              { icon: Megaphone, text: 'A simple composer for the send itself, saved as a draft until you\'re ready' },
+              { icon: BarChart2, text: 'Opens, clicks, bounces, and unsubscribes tracked automatically' },
+            ].map((item) => (
+              <li key={item.text} className="flex items-start gap-3">
+                <item.icon className="h-4 w-4 text-primary-600 mt-0.5 flex-shrink-0" />
+                <span className="text-sm text-gray-700">{item.text}</span>
+              </li>
+            ))}
+          </ul>
+          <Link
+            href="/campaigns"
+            className="mt-9 inline-flex items-center gap-1.5 text-sm font-medium text-primary-700 hover:text-primary-800 transition-colors"
+          >
+            See Campaigns
+            <ArrowUpRight className="h-3.5 w-3.5" />
+          </Link>
+        </div>
+
+        <div className="relative lg:order-1">
+          <div className="absolute -inset-3 -z-10 rounded-2xl bg-white/60 -rotate-1" />
+          <div className="rounded-2xl border border-gray-200 bg-white shadow-warm-lg overflow-hidden">
+            <div className="flex items-center gap-2 border-b border-gray-100 px-5 py-3.5">
+              <Megaphone className="h-4 w-4 text-primary-600" />
+              <span className="text-sm font-serif text-gray-800">Spring Product Update</span>
+              <span className="ml-auto text-[11px] px-2 py-0.5 rounded-full border border-success/30 bg-success/10 text-success font-medium">Sent</span>
+            </div>
+            <div className="px-5 py-5 space-y-4">
+              <div className="grid grid-cols-3 gap-3">
+                {[
+                  { val: '4,218', label: 'delivered' },
+                  { val: '61%', label: 'opened' },
+                  { val: '18%', label: 'clicked' },
+                ].map((stat) => (
+                  <div key={stat.label} className="rounded-lg bg-gray-50 px-3 py-3 text-center">
+                    <div className="font-serif text-xl text-gray-900">{stat.val}</div>
+                    <div className="text-[11px] text-gray-500 mt-0.5">{stat.label}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="rounded-lg border border-gray-100 px-3.5 py-3 flex items-center justify-between">
+                <span className="text-sm text-gray-600">Customers — Q2 list</span>
+                <span className="text-xs text-gray-400">4,312 contacts</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -264,6 +342,7 @@ const plans = [
       '1 Gmail account',
       'Priority inbox sorting',
       'Action item extraction',
+      'Email marketing campaigns — up to 1,000 sends/mo',
     ],
     cta: 'Start free',
     href: '/auth/signup',
@@ -281,6 +360,7 @@ const plans = [
       '5 Gmail accounts',
       'Smart reply drafts, in your voice',
       'Slack alerts for urgent mail',
+      'Email marketing campaigns',
       'Priority support',
     ],
     cta: 'Start Pro',
@@ -501,6 +581,7 @@ export default function LandingPage() {
       <Navbar isLoggedIn={isLoggedIn} />
       <main>
         <Hero isLoggedIn={isLoggedIn} />
+        <Campaigns />
         <Approach />
         <HowItWorks />
         <Pricing />

@@ -12,6 +12,8 @@ export type RootStackParamList = {
   Settings: undefined;
   Billing: undefined;
   SLA: undefined;
+  Workspace: undefined;
+  Notifications: undefined;
 };
 
 export type TabParamList = {

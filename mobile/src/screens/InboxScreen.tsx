@@ -17,9 +17,9 @@ const CATEGORIES = [
 ];
 
 const PRIORITY_COLORS: Record<string, string> = {
-  high: '#ef4444',
-  medium: '#f59e0b',
-  low: '#10b981',
+  high: '#b5432f',
+  medium: '#b3812c',
+  low: '#5c7a4a',
 };
 
 function EmailItem({ item, onPress }: { item: any; onPress: () => void }) {
@@ -78,7 +78,7 @@ export default function InboxScreen() {
 
   if (loading) return (
     <View style={styles.centered}>
-      <ActivityIndicator color="#60a5fa" size="large" />
+      <ActivityIndicator color="#e17c4e" size="large" />
     </View>
   );
 
@@ -86,17 +86,17 @@ export default function InboxScreen() {
     <View style={styles.container}>
       {/* Search */}
       <View style={styles.searchRow}>
-        <Ionicons name="search" size={16} color="#64748b" style={styles.searchIcon} />
+        <Ionicons name="search" size={16} color="#83745e" style={styles.searchIcon} />
         <TextInput
           style={styles.searchInput}
           placeholder="Search emails..."
-          placeholderTextColor="#64748b"
+          placeholderTextColor="#83745e"
           value={search}
           onChangeText={setSearch}
         />
         {search ? (
           <TouchableOpacity onPress={() => setSearch('')}>
-            <Ionicons name="close-circle" size={18} color="#64748b" />
+            <Ionicons name="close-circle" size={18} color="#83745e" />
           </TouchableOpacity>
         ) : null}
       </View>
@@ -130,10 +130,10 @@ export default function InboxScreen() {
           renderItem={({ item }) => (
             <EmailItem item={item} onPress={() => navigation.navigate('EmailDetail', { emailId: item.id })} />
           )}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#60a5fa" />}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#e17c4e" />}
           ListEmptyComponent={
             <View style={styles.centered}>
-              <Ionicons name="mail-outline" size={48} color="#334155" />
+              <Ionicons name="mail-outline" size={48} color="#4a4033" />
               <Text style={styles.emptyText}>No emails</Text>
             </View>
           }
@@ -160,42 +160,42 @@ function formatTime(iso: string) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#0f172a' },
+  container: { flex: 1, backgroundColor: '#221c16' },
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingTop: 80 },
   searchRow: {
-    flexDirection: 'row', alignItems: 'center', backgroundColor: '#1e293b',
+    flexDirection: 'row', alignItems: 'center', backgroundColor: '#332b22',
     marginHorizontal: 16, marginTop: 8, borderRadius: 12, paddingHorizontal: 12,
-    borderWidth: 1, borderColor: '#334155',
+    borderWidth: 1, borderColor: '#4a4033',
   },
   searchIcon: { marginRight: 8 },
   searchInput: { flex: 1, color: '#fff', paddingVertical: 10, fontSize: 14 },
   tabs: { maxHeight: 48, marginTop: 8 },
   tab: {
     paddingHorizontal: 14, paddingVertical: 6, borderRadius: 20,
-    backgroundColor: '#1e293b', borderWidth: 1, borderColor: '#334155',
+    backgroundColor: '#332b22', borderWidth: 1, borderColor: '#4a4033',
   },
-  tabActive: { backgroundColor: '#2563eb', borderColor: '#2563eb' },
-  tabText: { color: '#94a3b8', fontSize: 13, fontWeight: '500' },
+  tabActive: { backgroundColor: '#b04723', borderColor: '#b04723' },
+  tabText: { color: '#a99b83', fontSize: 13, fontWeight: '500' },
   tabTextActive: { color: '#fff' },
   emailItem: {
     flexDirection: 'row', paddingHorizontal: 16, paddingVertical: 14,
-    borderBottomWidth: 1, borderBottomColor: '#1e293b',
+    borderBottomWidth: 1, borderBottomColor: '#332b22',
   },
-  emailUnread: { backgroundColor: '#0f172a' },
+  emailUnread: { backgroundColor: '#221c16' },
   emailLeft: { marginRight: 12, alignItems: 'center' },
   avatar: { width: 42, height: 42, borderRadius: 21, justifyContent: 'center', alignItems: 'center' },
   avatarText: { color: '#fff', fontWeight: '700', fontSize: 16 },
   priorityDot: { width: 7, height: 7, borderRadius: 4, marginTop: 4 },
   emailBody: { flex: 1 },
   emailHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 2 },
-  sender: { color: '#94a3b8', fontSize: 14, flex: 1, marginRight: 8 },
+  sender: { color: '#a99b83', fontSize: 14, flex: 1, marginRight: 8 },
   senderBold: { color: '#fff', fontWeight: '700' },
-  time: { color: '#475569', fontSize: 12 },
-  subject: { color: '#94a3b8', fontSize: 14, marginBottom: 2 },
-  subjectBold: { color: '#e2e8f0', fontWeight: '600' },
-  snippet: { color: '#475569', fontSize: 13 },
-  errorBox: { margin: 16, backgroundColor: '#1e293b', borderRadius: 12, padding: 16, alignItems: 'center' },
-  errorText: { color: '#ef4444', marginBottom: 8 },
-  retryText: { color: '#60a5fa', fontWeight: '600' },
-  emptyText: { color: '#475569', marginTop: 12, fontSize: 15 },
+  time: { color: '#635646', fontSize: 12 },
+  subject: { color: '#a99b83', fontSize: 14, marginBottom: 2 },
+  subjectBold: { color: '#e7e0d4', fontWeight: '600' },
+  snippet: { color: '#635646', fontSize: 13 },
+  errorBox: { margin: 16, backgroundColor: '#332b22', borderRadius: 12, padding: 16, alignItems: 'center' },
+  errorText: { color: '#b5432f', marginBottom: 8 },
+  retryText: { color: '#e17c4e', fontWeight: '600' },
+  emptyText: { color: '#635646', marginTop: 12, fontSize: 15 },
 });

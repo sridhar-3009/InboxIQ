@@ -74,14 +74,14 @@ export default function DashboardScreen() {
   const sla = data.sla as Record<string, unknown> | null;
 
   if (loading) return (
-    <View style={styles.centered}><ActivityIndicator color="#60a5fa" size="large" /></View>
+    <View style={styles.centered}><ActivityIndicator color="#e17c4e" size="large" /></View>
   );
 
   return (
     <ScrollView
       style={styles.container}
       contentContainerStyle={styles.content}
-      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#60a5fa" />}
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#e17c4e" />}
     >
       <Text style={styles.greeting}>Good {getTimeOfDay()}</Text>
       <Text style={styles.sub}>Here's what needs your attention</Text>
@@ -95,14 +95,14 @@ export default function DashboardScreen() {
 
       <Text style={styles.sectionLabel}>Inbox</Text>
       <View style={styles.row}>
-        <StatCard icon="mail-unread-outline" iconColor="#60a5fa" label="Unread" value={data.unread as number ?? 0} />
+        <StatCard icon="mail-unread-outline" iconColor="#e17c4e" label="Unread" value={data.unread as number ?? 0} />
         <StatCard
           icon="warning-outline"
-          iconColor="#f59e0b"
+          iconColor="#b3812c"
           label="Actions"
           value={data.pendingActions as number ?? 0}
           sub={(data.overdueActions as number) > 0 ? `${data.overdueActions} overdue` : undefined}
-          subColor="#ef4444"
+          subColor="#b5432f"
         />
       </View>
 
@@ -110,8 +110,8 @@ export default function DashboardScreen() {
         <>
           <Text style={styles.sectionLabel}>Revenue</Text>
           <View style={styles.row}>
-            <StatCard icon="cash-outline" iconColor="#10b981" label="Total Revenue" value={formatCurrency(rev.total_revenue as number)} />
-            <StatCard icon="trending-up-outline" iconColor="#a78bfa" label="This Month" value={formatCurrency(rev.monthly_revenue as number)} />
+            <StatCard icon="cash-outline" iconColor="#5c7a4a" label="Total Revenue" value={formatCurrency(rev.total_revenue as number)} />
+            <StatCard icon="trending-up-outline" iconColor="#93a06a" label="This Month" value={formatCurrency(rev.monthly_revenue as number)} />
           </View>
           <View style={styles.row}>
             <StatCard icon="briefcase-outline" iconColor="#f97316" label="Pipeline" value={formatCurrency(rev.pipeline_value as number)} />
@@ -126,13 +126,13 @@ export default function DashboardScreen() {
           <View style={styles.row}>
             <StatCard
               icon="checkmark-circle-outline"
-              iconColor="#10b981"
+              iconColor="#5c7a4a"
               label="Compliance"
               value={`${Math.round((sla.compliance_rate as number ?? 0) * 100)}%`}
             />
             <StatCard
               icon="time-outline"
-              iconColor="#f59e0b"
+              iconColor="#b3812c"
               label="Avg Response"
               value={`${Math.round(sla.avg_response_hours as number ?? 0)}h`}
             />
@@ -158,19 +158,19 @@ function formatCurrency(v: number) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#0f172a' },
+  container: { flex: 1, backgroundColor: '#221c16' },
   content: { padding: 16, paddingBottom: 32 },
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  greeting: { color: '#f1f5f9', fontSize: 22, fontWeight: '800', marginBottom: 4 },
-  sub: { color: '#64748b', fontSize: 14, marginBottom: 20 },
-  sectionLabel: { color: '#94a3b8', fontSize: 12, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 10, marginTop: 8 },
+  greeting: { color: '#f3efe8', fontSize: 22, fontWeight: '800', marginBottom: 4 },
+  sub: { color: '#83745e', fontSize: 14, marginBottom: 20 },
+  sectionLabel: { color: '#a99b83', fontSize: 12, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 10, marginTop: 8 },
   row: { flexDirection: 'row', gap: 10, marginBottom: 10 },
-  card: { flex: 1, backgroundColor: '#1e293b', borderRadius: 16, padding: 14, borderWidth: 1, borderColor: '#334155' },
+  card: { flex: 1, backgroundColor: '#332b22', borderRadius: 16, padding: 14, borderWidth: 1, borderColor: '#4a4033' },
   iconBg: { width: 36, height: 36, borderRadius: 10, justifyContent: 'center', alignItems: 'center', marginBottom: 10 },
-  cardValue: { color: '#f1f5f9', fontSize: 22, fontWeight: '800', marginBottom: 2 },
-  cardLabel: { color: '#64748b', fontSize: 12 },
-  cardSub: { color: '#94a3b8', fontSize: 11, marginTop: 2 },
-  errorBox: { backgroundColor: '#1e293b', borderRadius: 12, padding: 14, marginBottom: 16, alignItems: 'center' },
-  errorText: { color: '#ef4444', marginBottom: 8 },
-  retryText: { color: '#60a5fa', fontWeight: '600' },
+  cardValue: { color: '#f3efe8', fontSize: 22, fontWeight: '800', marginBottom: 2 },
+  cardLabel: { color: '#83745e', fontSize: 12 },
+  cardSub: { color: '#a99b83', fontSize: 11, marginTop: 2 },
+  errorBox: { backgroundColor: '#332b22', borderRadius: 12, padding: 14, marginBottom: 16, alignItems: 'center' },
+  errorText: { color: '#b5432f', marginBottom: 8 },
+  retryText: { color: '#e17c4e', fontWeight: '600' },
 });

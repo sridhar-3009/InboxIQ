@@ -32,6 +32,7 @@ import {
   DollarSign,
   ShoppingBag,
   FileStack,
+  Megaphone,
 } from 'lucide-react';
 import clsx from 'clsx';
 import toast from 'react-hot-toast';
@@ -51,6 +52,7 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { label: 'Dashboard',     href: '/dashboard',      icon: LayoutDashboard },
+  { label: 'Campaigns',     href: '/campaigns',       icon: Megaphone },
   { label: 'Inbox',         href: '/email',           icon: Inbox },
   { label: 'Snoozed',       href: '/snoozed',        icon: AlarmClock },
   { label: 'Actions',       href: '/actions',         icon: CheckSquare },

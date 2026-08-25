@@ -9,10 +9,10 @@ import { knowledgeApi, apiErrorMessage } from '../lib/api';
 
 const CATEGORY_COLORS: Record<string, string> = {
   product: '#6366f1',
-  pricing: '#10b981',
-  process: '#f59e0b',
-  contact: '#60a5fa',
-  preference: '#a78bfa',
+  pricing: '#5c7a4a',
+  process: '#b3812c',
+  contact: '#e17c4e',
+  preference: '#93a06a',
 };
 
 function KnowledgeItem({ item, onDelete }: { item: any; onDelete: () => void }) {
@@ -20,12 +20,12 @@ function KnowledgeItem({ item, onDelete }: { item: any; onDelete: () => void }) 
     <View style={styles.item}>
       <View style={styles.itemHeader}>
         {item.category && (
-          <View style={[styles.catBadge, { backgroundColor: (CATEGORY_COLORS[item.category] || '#64748b') + '20' }]}>
-            <Text style={[styles.catText, { color: CATEGORY_COLORS[item.category] || '#94a3b8' }]}>{item.category}</Text>
+          <View style={[styles.catBadge, { backgroundColor: (CATEGORY_COLORS[item.category] || '#83745e') + '20' }]}>
+            <Text style={[styles.catText, { color: CATEGORY_COLORS[item.category] || '#a99b83' }]}>{item.category}</Text>
           </View>
         )}
         <TouchableOpacity onPress={onDelete} style={styles.deleteBtn}>
-          <Ionicons name="trash-outline" size={16} color="#64748b" />
+          <Ionicons name="trash-outline" size={16} color="#83745e" />
         </TouchableOpacity>
       </View>
       <Text style={styles.content}>{item.content}</Text>
@@ -79,20 +79,20 @@ export default function KnowledgeScreen() {
     ]);
   };
 
-  if (loading) return <View style={styles.centered}><ActivityIndicator color="#60a5fa" size="large" /></View>;
+  if (loading) return <View style={styles.centered}><ActivityIndicator color="#e17c4e" size="large" /></View>;
 
   return (
     <View style={styles.container}>
       <View style={styles.searchRow}>
-        <Ionicons name="search" size={16} color="#64748b" style={{ marginRight: 8 }} />
+        <Ionicons name="search" size={16} color="#83745e" style={{ marginRight: 8 }} />
         <TextInput
           style={styles.searchInput}
           placeholder="Search knowledge..."
-          placeholderTextColor="#64748b"
+          placeholderTextColor="#83745e"
           value={search}
           onChangeText={setSearch}
         />
-        {search ? <TouchableOpacity onPress={() => setSearch('')}><Ionicons name="close-circle" size={18} color="#64748b" /></TouchableOpacity> : null}
+        {search ? <TouchableOpacity onPress={() => setSearch('')}><Ionicons name="close-circle" size={18} color="#83745e" /></TouchableOpacity> : null}
       </View>
 
       {error ? (
@@ -105,10 +105,10 @@ export default function KnowledgeScreen() {
           data={entries}
           keyExtractor={i => i.id}
           renderItem={({ item }) => <KnowledgeItem item={item} onDelete={() => handleDelete(item.id)} />}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(search); }} tintColor="#60a5fa" />}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(search); }} tintColor="#e17c4e" />}
           ListEmptyComponent={
             <View style={styles.centered}>
-              <Ionicons name="library-outline" size={48} color="#334155" />
+              <Ionicons name="library-outline" size={48} color="#4a4033" />
               <Text style={styles.emptyText}>No knowledge entries</Text>
             </View>
           }
@@ -119,23 +119,23 @@ export default function KnowledgeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#0f172a' },
+  container: { flex: 1, backgroundColor: '#221c16' },
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingTop: 80 },
   searchRow: {
-    flexDirection: 'row', alignItems: 'center', backgroundColor: '#1e293b',
+    flexDirection: 'row', alignItems: 'center', backgroundColor: '#332b22',
     marginHorizontal: 16, marginVertical: 10, borderRadius: 12, paddingHorizontal: 12,
-    borderWidth: 1, borderColor: '#334155',
+    borderWidth: 1, borderColor: '#4a4033',
   },
   searchInput: { flex: 1, color: '#fff', paddingVertical: 10, fontSize: 14 },
-  item: { padding: 14, marginHorizontal: 16, marginVertical: 6, backgroundColor: '#1e293b', borderRadius: 14, borderWidth: 1, borderColor: '#334155' },
+  item: { padding: 14, marginHorizontal: 16, marginVertical: 6, backgroundColor: '#332b22', borderRadius: 14, borderWidth: 1, borderColor: '#4a4033' },
   itemHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
   catBadge: { borderRadius: 20, paddingHorizontal: 10, paddingVertical: 3 },
   catText: { fontSize: 11, fontWeight: '700', textTransform: 'capitalize' },
   deleteBtn: { padding: 4 },
-  content: { color: '#e2e8f0', fontSize: 14, lineHeight: 20, marginBottom: 8 },
-  source: { color: '#475569', fontSize: 12 },
-  errorBox: { margin: 16, backgroundColor: '#1e293b', borderRadius: 12, padding: 16, alignItems: 'center' },
-  errorText: { color: '#ef4444', marginBottom: 8 },
-  retryText: { color: '#60a5fa', fontWeight: '600' },
-  emptyText: { color: '#475569', marginTop: 12, fontSize: 15 },
+  content: { color: '#e7e0d4', fontSize: 14, lineHeight: 20, marginBottom: 8 },
+  source: { color: '#635646', fontSize: 12 },
+  errorBox: { margin: 16, backgroundColor: '#332b22', borderRadius: 12, padding: 16, alignItems: 'center' },
+  errorText: { color: '#b5432f', marginBottom: 8 },
+  retryText: { color: '#e17c4e', fontWeight: '600' },
+  emptyText: { color: '#635646', marginTop: 12, fontSize: 15 },
 });

@@ -31,7 +31,7 @@ export default function App() {
   if (loading) {
     return (
       <View style={styles.splash}>
-        <ActivityIndicator color="#60a5fa" size="large" />
+        <ActivityIndicator color="#e17c4e" size="large" />
       </View>
     );
   }
@@ -54,5 +54,5 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  splash: { flex: 1, backgroundColor: '#0f172a', justifyContent: 'center', alignItems: 'center' },
+  splash: { flex: 1, backgroundColor: '#221c16', justifyContent: 'center', alignItems: 'center' },
 });

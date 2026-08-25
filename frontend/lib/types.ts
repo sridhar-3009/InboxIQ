@@ -731,3 +731,39 @@ export interface WorkloadEntry {
   name: string;
   assigned_count: number;
 }
+
+export interface MarketingAudience {
+  id: string;
+  name: string;
+  created_at: string;
+  contact_count: number;
+}
+
+export interface MarketingContact {
+  id: string;
+  email: string;
+  name: string | null;
+  subscribed: boolean;
+  created_at: string;
+}
+
+export interface MarketingCampaign {
+  id: string;
+  name: string;
+  subject: string;
+  body_html?: string;
+  from_name?: string | null;
+  audience_id: string;
+  status: 'draft' | 'sending' | 'sent' | 'failed';
+  created_at: string;
+  sent_at: string | null;
+  stats?: Record<string, number>;
+}
+
+export interface MarketingUsage {
+  plan: string;
+  limit: number;
+  sent: number;
+  remaining: number;
+  period: string;
+}
