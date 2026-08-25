@@ -33,7 +33,7 @@ def _uid(u: dict) -> str:
 
 def _get_user_org(user_id: str) -> dict:
     supabase = get_supabase()
-    row = supabase.table("user_profiles").select("org_id, org_role, name, email").eq("id", user_id).single().execute()
+    row = supabase.table("user_profiles").select("org_id, org_role, name").eq("id", user_id).single().execute()
     return row.data or {}
 
 
@@ -279,7 +279,7 @@ def _notify_mentions(content: str, org_id: str, author_name: str, channel_id: st
         supabase = get_supabase()
         members = (
             supabase.table("org_members")
-            .select("user_id, user_profiles(id, name, email)")
+            .select("user_id, user_profiles(id, name)")
             .eq("org_id", org_id)
             .eq("status", "active")
             .execute()
@@ -287,11 +287,10 @@ def _notify_mentions(content: str, org_id: str, author_name: str, channel_id: st
         for m in members.data or []:
             profile = m.get("user_profiles") or {}
             name = (profile.get("name") or "").strip()
-            email_handle = (profile.get("email") or "").split("@")[0]
             name_handle = name.lower().replace(" ", "")
             if not m.get("user_id"):
                 continue
-            if any(h.lower() in (name_handle, email_handle.lower()) for h in handles):
+            if any(h.lower() == name_handle for h in handles):
                 create_notification(
                     user_id=m["user_id"],
                     org_id=org_id,
@@ -309,7 +308,7 @@ async def send_message(channel_id: str, body: MessageCreate, current_user: Annot
     user_id = _uid(current_user)
     user_data = _get_user_org(user_id)
     org_id = _require_org(user_data)
-    author_name = user_data.get("name") or user_data.get("email", "Someone")
+    author_name = user_data.get("name") or current_user.get("email") or "Someone"
     supabase = get_supabase()
     result = supabase.table("team_messages").insert({
         "channel_id": channel_id, "org_id": org_id, "user_id": user_id,

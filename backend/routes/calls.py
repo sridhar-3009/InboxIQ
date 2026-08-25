@@ -24,7 +24,7 @@ router = APIRouter(tags=["calls"])
 
 def _get_user_org(user_id: str) -> dict:
     supabase = get_supabase()
-    row = supabase.table("user_profiles").select("org_id, name, email").eq("id", user_id).single().execute()
+    row = supabase.table("user_profiles").select("org_id, name").eq("id", user_id).single().execute()
     return row.data or {}
 
 
@@ -94,7 +94,7 @@ async def call_signaling(websocket: WebSocket, room_id: str, token: str = Query(
         await websocket.close(code=4403)
         return
 
-    name = user_data.get("name") or user_data.get("email") or "Someone"
+    name = user_data.get("name") or payload.get("email") or "Someone"
     peer_id = user_id
     await websocket.accept()
 

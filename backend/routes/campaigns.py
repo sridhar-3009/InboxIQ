@@ -21,7 +21,7 @@ EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
 def _get_user_org(user_id: str) -> dict:
     supabase = get_supabase()
-    row = supabase.table("user_profiles").select("org_id, name, email").eq("id", user_id).single().execute()
+    row = supabase.table("user_profiles").select("org_id, name").eq("id", user_id).single().execute()
     return row.data or {}
 
 
