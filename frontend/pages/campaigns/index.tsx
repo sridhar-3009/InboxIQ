@@ -1,9 +1,10 @@
 import Head from 'next/head';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useSessionContext } from '@supabase/auth-helpers-react';
 import {
-  Megaphone, Users, Plus, Trash2, Send, X, Loader2, Mail,
+  Megaphone, Users, Plus, Trash2, Send, X, Loader2, Mail, UsersRound,
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import toast from 'react-hot-toast';
@@ -356,21 +357,46 @@ function CampaignsTab({ audiences }: { audiences: MarketingAudience[] }) {
 
 // ─── Page ───────────────────────────────────────────────────────────────────
 
+function NoOrgPrompt() {
+  return (
+    <div className="card p-10 text-center max-w-md mx-auto">
+      <div className="h-12 w-12 rounded-xl bg-primary-50 dark:bg-primary-900/20 flex items-center justify-center mx-auto mb-4">
+        <UsersRound className="h-6 w-6 text-primary-600" />
+      </div>
+      <h3 className="font-serif text-lg text-gray-900 dark:text-gray-100 mb-2">Create a team to send campaigns</h3>
+      <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+        Campaigns, audiences, and usage all live under a team. Set one up — it takes a few seconds — then come back here.
+      </p>
+      <Link href="/team" className="btn-primary inline-flex items-center gap-1.5 text-sm">
+        Go to Team
+      </Link>
+    </div>
+  );
+}
+
 export default function CampaignsPage() {
   const router = useRouter();
   const { session, isLoading: sessionLoading } = useSessionContext();
   const [activeTab, setActiveTab] = useState<Tab>('campaigns');
   const [audiences, setAudiences] = useState<MarketingAudience[]>([]);
+  const [orgStatus, setOrgStatus] = useState<'checking' | 'ok' | 'no-org'>('checking');
 
   useEffect(() => {
     if (!sessionLoading && !session) router.replace('/auth/signin');
   }, [session, sessionLoading, router]);
 
   useEffect(() => {
-    if (session) campaignsApi.listAudiences().then((r) => setAudiences(r.audiences)).catch(() => {});
-  }, [session, activeTab]);
+    if (!session) return;
+    campaignsApi.getUsage()
+      .then(() => setOrgStatus('ok'))
+      .catch((err) => setOrgStatus(err?.response?.status === 404 ? 'no-org' : 'ok'));
+  }, [session]);
 
-  if (sessionLoading || !session) return <LoadingSpinner fullPage />;
+  useEffect(() => {
+    if (session && orgStatus === 'ok') campaignsApi.listAudiences().then((r) => setAudiences(r.audiences)).catch(() => {});
+  }, [session, orgStatus, activeTab]);
+
+  if (sessionLoading || !session || orgStatus === 'checking') return <LoadingSpinner fullPage />;
 
   const tabs: { id: Tab; label: string; icon: typeof Megaphone }[] = [
     { id: 'campaigns', label: 'Campaigns', icon: Megaphone },
@@ -382,31 +408,37 @@ export default function CampaignsPage() {
       <Head><title>Campaigns — Mailair</title></Head>
       <Layout title="Campaigns">
         <div className="max-w-4xl mx-auto">
-          <UsageBar />
+          {orgStatus === 'no-org' ? (
+            <NoOrgPrompt />
+          ) : (
+            <>
+              <UsageBar />
 
-          <div className="flex gap-1 bg-gray-100 dark:bg-gray-800 rounded-xl p-1 w-full sm:w-fit mb-6">
-            {tabs.map((tab) => {
-              const Icon = tab.icon;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={clsx(
-                    'flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all',
-                    activeTab === tab.id
-                      ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm'
-                      : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
-                  )}
-                >
-                  <Icon className="h-4 w-4" />
-                  {tab.label}
-                </button>
-              );
-            })}
-          </div>
+              <div className="flex gap-1 bg-gray-100 dark:bg-gray-800 rounded-xl p-1 w-full sm:w-fit mb-6">
+                {tabs.map((tab) => {
+                  const Icon = tab.icon;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id)}
+                      className={clsx(
+                        'flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all',
+                        activeTab === tab.id
+                          ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm'
+                          : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
+                      )}
+                    >
+                      <Icon className="h-4 w-4" />
+                      {tab.label}
+                    </button>
+                  );
+                })}
+              </div>
 
-          {activeTab === 'campaigns' && <CampaignsTab audiences={audiences} />}
-          {activeTab === 'audiences' && <AudiencesTab />}
+              {activeTab === 'campaigns' && <CampaignsTab audiences={audiences} />}
+              {activeTab === 'audiences' && <AudiencesTab />}
+            </>
+          )}
         </div>
       </Layout>
     </>
